@@ -1,10 +1,13 @@
 {
-  "name": "@sunshj/express-filebased-routing",
-  "version": "1.0.0",
+  "name": "express-filebased-routing",
+  "version": "0.0.1",
   "description": "Filebased Routing for Express.js",
   "keywords": [
-    "express.js"
+    "express.js",
+    "filebased routing"
   ],
+  "author": "sunshj",
+  "license": "ISC",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -18,7 +21,5 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
-  },
-  "author": "sunshj",
-  "license": "ISC"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@sunshj/efr-example",
+  "name": "example",
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -8,6 +8,6 @@
     "start:cjs": "pnpm build && node dist/index.cjs"
   },
   "dependencies": {
-    "@sunshj/express-filebased-routing": "workspace:*"
+    "express-filebased-routing": "workspace:*"
   }
 }

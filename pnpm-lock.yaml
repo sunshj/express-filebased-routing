@@ -34,7 +34,7 @@ importers:
 
   packages/example:
     dependencies:
-      '@sunshj/express-filebased-routing':
+      express-filebased-routing:
         specifier: workspace:*
         version: link:../core
 
