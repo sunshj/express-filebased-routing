@@ -1,3 +1,3 @@
-import { isCjs } from './utils';
+import { isCjs } from './utils'
 
-export { isCjs };
+export { isCjs }
