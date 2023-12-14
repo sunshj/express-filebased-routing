@@ -1,14 +1,14 @@
-import express from 'express';
-import { isCjs } from '@sunshj/express-filebased-routing';
+import express from 'express'
+import { isCjs } from 'express-filebased-routing'
 
-const app = express();
+const app = express()
 
 app.use('/', (req: any, res: any) => {
   res.send({
-    isCjs: isCjs(),
-  });
-});
+    isCjs: isCjs()
+  })
+})
 
 app.listen(3000, () => {
-  console.log('server listening on http://localhost:3000');
-});
+  console.log('server listening on http://localhost:3000')
+})
