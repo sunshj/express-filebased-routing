@@ -2,8 +2,8 @@
   "name": "packages",
   "private": true,
   "scripts": {
-    "build": "pnpm -C packages/core run build",
-    "release": "pnpm publish"
+    "build": "pnpm -C packages/core build",
+    "release": "pnpm -C packages/core release"
   },
   "engines": {
     "pnpm": ">=7"

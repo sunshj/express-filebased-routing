@@ -13,7 +13,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup src/index.ts",
-    "build:watch": "pnpm build --watch"
+    "build:watch": "pnpm build --watch",
+    "release": "pnpm build && pnpm publish"
   },
   "exports": {
     ".": {
@@ -21,5 +22,8 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
