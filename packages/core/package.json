@@ -9,8 +9,8 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup index.ts",
-    "build:watch": "tsup index.ts --watch"
+    "build": "tsup src/index.ts",
+    "build:watch": "pnpm build --watch"
   },
   "exports": {
     ".": {
