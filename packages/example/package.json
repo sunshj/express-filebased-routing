@@ -2,11 +2,11 @@
   "name": "example",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/app.ts",
     "build:esm": "rimraf dist && tsup --format esm",
     "build:cjs": "rimraf dist && tsup --format cjs",
-    "start:esm": "pnpm build:esm && node dist/index.mjs",
-    "start:cjs": "pnpm build:cjs && node dist/index.js"
+    "start:esm": "pnpm build:esm && node dist/app.mjs",
+    "start:cjs": "pnpm build:cjs && node dist/app.js"
   },
   "dependencies": {
     "express-filebased-routing": "workspace:*",

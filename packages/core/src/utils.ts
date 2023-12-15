@@ -54,11 +54,11 @@ export async function readModules(dir: string) {
 
       if (stat.isDirectory()) {
         await readModule(filePath)
-      } else if (stat.isFile()) {
+      } else {
         const urlKey = getRouterPath(routesPath, filePath)
         const handlers: Handlers = isCjs() ? require(filePath) : await import(filePathUrl)
 
-        if (!Object.keys(handlers).length) return
+        if (!Object.keys(handlers).length) continue
         const validHandlers: Handlers = {}
         for (const [key, value] of Object.entries(handlers)) {
           if (['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(key)) {
