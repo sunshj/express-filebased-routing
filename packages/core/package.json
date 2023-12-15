@@ -1,6 +1,6 @@
 {
   "name": "express-filebased-routing",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Filebased Routing for Express.js",
   "keywords": [
     "express.js",
@@ -28,7 +28,7 @@
     "dist"
   ],
   "peerDependencies": {
-    "express": ">4"
+    "express": ">=4.0.0"
   },
   "dependencies": {
     "cli-table": "^0.3.11"
