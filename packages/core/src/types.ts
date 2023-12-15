@@ -1,5 +1,5 @@
 import type { Handler } from 'express'
-import type { REQUEST_METHOD } from './contant'
+import type { REQUEST_METHOD } from './constant'
 
 export type RequestMethod = (typeof REQUEST_METHOD)[number]
 

@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs/promises'
 import type { Handlers, ModulesMap, NormalizePathOptions, RequestMethod } from './types'
 import { pathToFileURL } from 'url'
-import { REQUEST_METHOD } from './contant'
+import { REQUEST_METHOD } from './constant'
 
 export function isCjs() {
   return typeof module !== 'undefined' && module.exports && typeof require !== 'undefined'
