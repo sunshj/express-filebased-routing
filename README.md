@@ -1,13 +1,13 @@
 # express-filebased-routing
 
-## 功能需求
+## 支持功能
 
 - [x] 基于文件系统的路由
 - [x] 自定义全局前缀
 - [x] 可在控制台打印路由列表
 - [x] Promise API
 - [x] 支持 ES Module 和 CommonJS
-- [ ] 支持路由中间件
+- [x] 支持路由中间件
 
 ## API 设计
 
@@ -51,7 +51,7 @@
 
    > 如不支持顶层await，可使用异步函数包裹
 
-## 基础使用方法
+## 基础使用
 
 1. 基础路由如 `routes/index.js` ，对应了 `GET /` ，支持 `GET/POST/PUT/PATCH/DELETE `
 
@@ -68,10 +68,7 @@
 路由中间件，导出数组
 
 ```typescript
-export const GET = [
-  authMiddleware(),
-  (req, res) => {
-    res.send('Hello World!')
-  }
-]
+const sayHello = (req, res) => res.send('Hello World!')
+
+export const GET = (req, res) => [authMiddleware, sayHello]
 ```

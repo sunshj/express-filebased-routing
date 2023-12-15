@@ -4,5 +4,5 @@ export default defineConfig({
   entry: ['src'],
   clean: true,
   shims: true,
-  external: ['express', 'http-errors']
+  external: ['express', 'http-errors', 'joi']
 })

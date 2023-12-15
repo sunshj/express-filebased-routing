@@ -30,13 +30,13 @@ export async function setupRouter(app: Express, options?: Options) {
   const modules = await readModules(routesPath)
 
   for (const [urlKey, { filePath, handlers }] of modules) {
-    Object.entries(handlers).map(([methodKey, handler]) => {
+    for (const [methodKey, handler] of Object.entries(handlers)) {
       const urlKeyWithPrefix = normalizePath(globalPrefix + urlKey)
       table.push([methodKey, loggerBaseUrl + urlKeyWithPrefix, filePath])
 
       const method = normalizeRequestMethod(methodKey as REQUEST_METHOD)
       app[method](urlKeyWithPrefix, handler)
-    })
+    }
   }
 
   if (typeof logger === 'boolean' && logger) console.log(table.toString())

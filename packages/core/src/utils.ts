@@ -58,16 +58,14 @@ export async function readModules(dir: string) {
         const urlKey = getRouterPath(routesPath, filePath)
         const handlers: Handlers = isCjs() ? require(filePath) : await import(filePathUrl)
 
-        if (!Object.keys(handlers).length) continue
-
+        if (!Object.keys(handlers).length) return
         const validHandlers: Handlers = {}
         for (const [key, value] of Object.entries(handlers)) {
           if (['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(key)) {
             Reflect.set(validHandlers, key, value)
+            modules.set(urlKey, { filePath, handlers: validHandlers })
           }
         }
-
-        modules.set(urlKey, { filePath, handlers: validHandlers })
       }
     }
   }
