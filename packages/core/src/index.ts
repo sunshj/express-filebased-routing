@@ -29,14 +29,16 @@ export async function setupRouter(app: Express, options?: Options) {
 
   const ignoreFiles = await glob(options?.ignoreFiles ?? [], { absolute: true })
 
-  const table = new Table({ head: ['Method', 'Url', 'Path'] })
+  const table = new Table({ head: ['Sid', 'Method', 'Url', 'Path'] })
 
   const modules = await readModules(routesPath, ignoreFiles)
+  let count = 0
 
   for (const [urlKey, { filePath, handlers }] of modules) {
     for (const [methodKey, handler] of Object.entries(handlers)) {
+      count += 1
       const urlKeyWithPrefix = normalizePath(globalPrefix + urlKey)
-      table.push([methodKey, loggerBaseUrl + urlKeyWithPrefix, filePath])
+      table.push([count.toString(), methodKey, loggerBaseUrl + urlKeyWithPrefix, filePath])
 
       const method = normalizeRequestMethod(methodKey as RequestMethod)
       app[method](urlKeyWithPrefix, handler)

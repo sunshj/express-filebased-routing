@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs/promises'
 import type { Handlers, ModulesMap, NormalizePathOptions, RequestMethod } from './types'
 import { pathToFileURL } from 'url'
-import { REQUEST_METHOD } from './constant'
+import { CATCH_ALL_ROUTE_REGEXP, REQUEST_METHOD } from './constant'
 
 export function isCjs() {
   return typeof module !== 'undefined' && module.exports && typeof require !== 'undefined'
@@ -16,6 +16,8 @@ export function getRouterPath(routesPath: string, filePath: string) {
   const directoryPath = path.dirname(relativePath)
   const extName = path.extname(relativePath)
   const filename = path.join(directoryPath, path.basename(filePath, extName))
+  if (CATCH_ALL_ROUTE_REGEXP.test(filename))
+    return filename.replace(CATCH_ALL_ROUTE_REGEXP, '*').replace(/\\/g, '/').replace(/^[/]*/, '/')
   return normalizePath(filename)
 }
 
@@ -47,6 +49,7 @@ export async function readModules(dir: string, ignoreFiles: string[] = []) {
   )
   let routesPath: string
   const modules: ModulesMap = new Map()
+  const catchAllModules: ModulesMap = new Map()
 
   const readModule = async (dir: string) => {
     if (!routesPath) routesPath = dir
@@ -75,7 +78,11 @@ export async function readModules(dir: string, ignoreFiles: string[] = []) {
         for (const [key, value] of handlersEntries) {
           if (REQUEST_METHOD.includes(key)) {
             Reflect.set(validHandlers, key, value)
-            modules.set(urlKey, { filePath, handlers: validHandlers })
+            if (urlKey.includes('*')) {
+              catchAllModules.set(urlKey, { filePath, handlers: validHandlers })
+            } else {
+              modules.set(urlKey, { filePath, handlers: validHandlers })
+            }
           }
         }
       }
@@ -83,6 +90,17 @@ export async function readModules(dir: string, ignoreFiles: string[] = []) {
   }
 
   await readModule(dir)
+  const sortedModules = toSortedModulesMap(modules)
+  const sortedCatchAllModules = toSortedModulesMap(catchAllModules, false)
+  sortedCatchAllModules.forEach((value, key) => sortedModules.set(key, value))
 
-  return modules
+  return sortedModules
+}
+
+function toSortedModulesMap(map: ModulesMap, positive: boolean = true) {
+  return new Map(
+    Array.from(map)
+      .sort((a, b) => (positive ? a[0].length - b[0].length : b[0].length - a[0].length))
+      .map(v => [v[0], v[1]])
+  )
 }
