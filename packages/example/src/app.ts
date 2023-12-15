@@ -7,10 +7,12 @@ async function main() {
   const app = express()
   app.use(express.json())
   app.use(express.urlencoded({ extended: false }))
+  app.set('views', path.join(__dirname, 'views'))
+  app.set('view engine', 'ejs')
 
   await setupRouter(app, {
     directory: path.join(__dirname, '.'),
-    // globalPrefix: '/api',
+    ignoreFiles: ['**/*.ejs'],
     logger: {
       enable: true,
       baseUrl: 'http://localhost:3000'

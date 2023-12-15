@@ -1,18 +1,25 @@
 import type { Handler } from 'express'
+import type { REQUEST_METHOD } from './contant'
 
-export type REQUEST_METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+export type RequestMethod = (typeof REQUEST_METHOD)[number]
 
-export type Handlers = Partial<Record<REQUEST_METHOD, Handler>>
+export type Handlers = Partial<Record<RequestMethod, Handler>>
 
 export type ModulesMap = Map<string, { filePath: string; handlers: Handlers }>
 
 export interface Options {
   directory?: string
   globalPrefix?: string
+  ignoreFiles?: string[]
   logger?:
     | boolean
     | {
         enable: boolean
         baseUrl?: string
       }
+}
+
+export interface NormalizePathOptions {
+  removeExtname?: boolean
+  replaceIndex?: boolean
 }

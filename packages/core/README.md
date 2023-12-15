@@ -17,9 +17,9 @@ import { setupRouter } from 'express-filebased-routing'
 
 async function main() {
   const app = express()
-  
+
   await setupRouter(app)
-    
+
   app.use((req, res, next) => {
     next(createError(404))
   })
@@ -54,16 +54,17 @@ main()
 
 ```typescript
 interface Options {
-    directory?: string;
-    globalPrefix?: string;
-    logger?: boolean | {
-        enable: boolean;
-        baseUrl?: string;
-    };
+  directory?: string
+  globalPrefix?: string
+  logger?:
+    | boolean
+    | {
+        enable: boolean
+        baseUrl?: string
+      }
 }
 
-declare function setupRouter(app: Express, options?: Options): Promise<void>;
+declare function setupRouter(app: Express, options?: Options): Promise<void>
 
-export { setupRouter };
+export { setupRouter }
 ```
-

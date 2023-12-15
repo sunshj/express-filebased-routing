@@ -9,6 +9,7 @@
     "start:cjs": "pnpm build:cjs && node dist/app.js"
   },
   "dependencies": {
+    "ejs": "^3.1.9",
     "express-filebased-routing": "workspace:*",
     "http-errors": "^2.0.0",
     "joi": "^17.11.0"

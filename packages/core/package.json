@@ -31,7 +31,8 @@
     "express": ">=4.0.0"
   },
   "dependencies": {
-    "cli-table": "^0.3.11"
+    "cli-table": "^0.3.11",
+    "fast-glob": "^3.3.2"
   },
   "devDependencies": {
     "@types/cli-table": "^0.3.4"

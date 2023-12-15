@@ -1,8 +1,9 @@
 import path from 'path'
+import glob from 'fast-glob'
 import Table from 'cli-table'
 import type { Express } from 'express'
 import { normalizePath, normalizeRequestMethod, readModules } from './utils'
-import type { Options, REQUEST_METHOD } from './types'
+import type { Options, RequestMethod } from './types'
 
 /**
  * 获取调用模块的当前目录
@@ -25,16 +26,18 @@ export async function setupRouter(app: Express, options?: Options) {
   const logger = options?.logger ?? false
   const loggerBaseUrl = typeof logger === 'object' ? logger.baseUrl?.replace(/[/]*$/, '') ?? '' : ''
 
+  const ignoreFiles = await glob(options?.ignoreFiles ?? [], { absolute: true })
+
   const table = new Table({ head: ['Method', 'Url', 'Path'] })
 
-  const modules = await readModules(routesPath)
+  const modules = await readModules(routesPath, ignoreFiles)
 
   for (const [urlKey, { filePath, handlers }] of modules) {
     for (const [methodKey, handler] of Object.entries(handlers)) {
       const urlKeyWithPrefix = normalizePath(globalPrefix + urlKey)
       table.push([methodKey, loggerBaseUrl + urlKeyWithPrefix, filePath])
 
-      const method = normalizeRequestMethod(methodKey as REQUEST_METHOD)
+      const method = normalizeRequestMethod(methodKey as RequestMethod)
       app[method](urlKeyWithPrefix, handler)
     }
   }
