@@ -17,6 +17,7 @@ function getModuleParent() {
  * @param {Express} app Express application
  * @param {Options} [options]
  * @param {string} [options.directory] /routes
+ * @param {string} [options.ignoreFiles] []
  * @param {string} [options.globalPrefix]
  * @param [options.logger] false
  */

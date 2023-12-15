@@ -17,6 +17,8 @@
    interface Options {
      // 默认读取当前目录下的routes目录
      directory?: string
+     // 排除某些文件/目录
+     ignoreFiles?: string[]
      // 设置全局前缀
      globalPrefix?: string
      // 是否在控制台打印路由列表，可配置baseUrl
