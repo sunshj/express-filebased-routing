@@ -5,6 +5,8 @@ import { setupRouter } from 'express-filebased-routing'
 
 async function main() {
   const app = express()
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: false }))
 
   await setupRouter(app, {
     directory: path.join(__dirname, 'api'),

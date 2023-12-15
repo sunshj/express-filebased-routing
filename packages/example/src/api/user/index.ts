@@ -1,13 +1,12 @@
 import type { Handler } from 'express'
+import { findAll } from './controller'
 
-export const GET: Handler = (_req, res) => {
-  res.send({
-    msg: 'get All Users'
-  })
-}
+export const GET = findAll
 
-export const POST: Handler = (_req, res) => {
+export const POST: Handler = (req, res) => {
+  if (!req.body?.name.trim()) return res.status(400).send({ msg: 'name is required' })
+  const { name } = req.body
   res.send({
-    msg: 'create user'
+    msg: `create user ${JSON.stringify({ name })}`
   })
 }

@@ -1,10 +1,8 @@
 import path from 'path'
-import fs from 'fs/promises'
 import Table from 'cli-table'
-import { pathToFileURL } from 'url'
 import type { Express } from 'express'
-import { getRouterPath, isCjs, normalizePath, normalizeRequestMethod } from './utils'
-import type { Handlers, ModulesMap, Options, REQUEST_METHOD } from './types'
+import { normalizePath, normalizeRequestMethod, readModules } from './utils'
+import type { Options, REQUEST_METHOD } from './types'
 
 /**
  * 获取调用模块的当前目录
@@ -27,29 +25,9 @@ export async function setupRouter(app: Express, options?: Options) {
   const logger = options?.logger ?? false
   const loggerBaseUrl = typeof logger === 'object' ? logger.baseUrl?.replace(/[/]*$/, '') ?? '' : ''
 
-  const modules: ModulesMap = new Map()
   const table = new Table({ head: ['Method', 'Url', 'Path'] })
 
-  const readModules = async (dir: string) => {
-    const files = await fs.readdir(dir)
-
-    for (const file of files) {
-      const filePath = path.join(dir, file)
-      const filePathUrl = pathToFileURL(filePath).href
-
-      const stat = await fs.stat(filePath)
-
-      if (stat.isDirectory()) {
-        await readModules(filePath)
-      } else if (stat.isFile()) {
-        const urlKey = getRouterPath(routesPath, filePath)
-        const handlers: Handlers = isCjs() ? require(filePath) : await import(filePathUrl)
-        modules.set(urlKey, { filePath, handlers })
-      }
-    }
-  }
-
-  await readModules(routesPath)
+  const modules = await readModules(routesPath)
 
   for (const [urlKey, { filePath, handlers }] of modules) {
     Object.entries(handlers).map(([methodKey, handler]) => {
