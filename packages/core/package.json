@@ -1,6 +1,6 @@
 {
   "name": "express-filebased-routing",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Filebased Routing for Express.js",
   "keywords": [
     "express.js",
@@ -14,6 +14,7 @@
   "scripts": {
     "build": "tsup src/index.ts",
     "build:watch": "pnpm build --watch",
+    "version:patch": "pnpm version patch",
     "release": "pnpm build && pnpm publish"
   },
   "exports": {

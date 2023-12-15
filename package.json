@@ -2,9 +2,10 @@
   "name": "packages",
   "private": true,
   "scripts": {
-    "build": "pnpm -C packages/core build",
     "format": "prettier packages --write",
-    "release": "pnpm -C packages/core release"
+    "build:core": "pnpm -C packages/core build",
+    "version:core": "pnpm -C packages/core version:patch",
+    "release:core": "pnpm -C packages/core release"
   },
   "engines": {
     "pnpm": ">=7"
