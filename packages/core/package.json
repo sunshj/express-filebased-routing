@@ -25,5 +25,14 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "peerDependencies": {
+    "express": ">4"
+  },
+  "dependencies": {
+    "cli-table": "^0.3.11"
+  },
+  "devDependencies": {
+    "@types/cli-table": "^0.3.4"
+  }
 }

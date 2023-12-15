@@ -3,11 +3,16 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsup src/index.ts",
-    "start:esm": "pnpm build && node dist/index.mjs",
-    "start:cjs": "pnpm build && node dist/index.cjs"
+    "build:esm": "rimraf dist && tsup --format esm",
+    "build:cjs": "rimraf dist && tsup --format cjs",
+    "start:esm": "pnpm build:esm && node dist/index.mjs",
+    "start:cjs": "pnpm build:cjs && node dist/index.js"
   },
   "dependencies": {
-    "express-filebased-routing": "workspace:*"
+    "express-filebased-routing": "workspace:*",
+    "http-errors": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/http-errors": "^2.0.4"
   }
 }
