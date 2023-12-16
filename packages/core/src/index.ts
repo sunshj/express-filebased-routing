@@ -25,7 +25,8 @@ export async function setupRouter(app: Express, options?: Options) {
   const routesPath = options?.directory ?? path.join(getModuleParent()?.path as string, './routes')
   const globalPrefix = options?.globalPrefix ?? ''
   const logger = options?.logger ?? false
-  const loggerBaseUrl = typeof logger === 'object' ? logger.baseUrl?.replace(/[/]*$/, '') ?? '' : ''
+  const loggerBaseUrl =
+    typeof logger === 'object' ? normalizePath(logger.baseUrl!, false) ?? '' : ''
 
   const ignoreFiles = await glob(options?.ignoreFiles ?? [], { absolute: true })
 
@@ -38,6 +39,7 @@ export async function setupRouter(app: Express, options?: Options) {
     for (const [methodKey, handler] of Object.entries(handlers)) {
       count += 1
       const urlKeyWithPrefix = normalizePath(globalPrefix + urlKey)
+
       table.push([count.toString(), methodKey, loggerBaseUrl + urlKeyWithPrefix, filePath])
 
       const method = normalizeRequestMethod(methodKey as RequestMethod)

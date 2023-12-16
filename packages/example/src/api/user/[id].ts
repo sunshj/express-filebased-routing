@@ -3,7 +3,10 @@ import { users } from '../../db'
 
 export const GET: Handler = (req, res) => {
   const { id } = req.params
-  res.send(users.find(user => user.id === Number(id)))
+  res.send({
+    msg: `get user #${id}`,
+    user: users.find(user => user.id === Number(id))
+  })
 }
 
 export const PUT: Handler = (req, res) => {

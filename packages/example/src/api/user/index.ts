@@ -1,4 +1,3 @@
-import type { Handler } from 'express'
 import { findAll, createOne } from './controller'
 import { joiValidator } from '../../middlewares'
 import { findAllUserDto, createUserDto } from './dto'

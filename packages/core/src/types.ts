@@ -19,7 +19,7 @@ export interface Options {
       }
 }
 
-export interface NormalizePathOptions {
+export interface NormalizeFilenameOptions {
   removeExtname?: boolean
   replaceIndex?: boolean
 }

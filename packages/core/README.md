@@ -8,8 +8,6 @@ npm i express-filebased-routing
 
 ## Usage
 
-### ES Module
-
 ```typescript
 import express from 'express'
 import createError from 'http-errors'
@@ -29,26 +27,65 @@ async function main() {
 main()
 ```
 
-### CommonJS
+### file-based route
 
 ```js
-const express = require('express')
-const createError = require('http-errors')
-const { setupRouter } = require('express-filebased-routing')
+// routes/index.js  --->  /
+// routes/user/index.js  --->  /user
+// routes/user/list.js  --->  /user/list
+// Support Method: GET/POST/PUT/PATCH/DELETE
 
-async function main() {
-  const app = express()
-
-  await setupRouter(app)
-
-  app.use((req, res, next) => {
-    next(createError(404))
+export const GET: Handler = (_req, res) => {
+  res.send({
+    msg: 'Express REST API is working'
   })
-
-  app.listen(3000)
 }
-main()
 ```
+
+### dynamic route
+
+```js
+// routes/user/[id].js  ---> /user/:id
+export const GET = (req, res) => {
+  const { id } = req.params
+  res.send({
+    msg: `get user #${id}`,
+  })
+}
+
+export const PUT = (req, res) => {
+  const { id } = req.params
+  res.send({
+    msg: `put user #${id}`,
+  })
+}
+
+export const DELETE = (req, res) => {
+  const { id } = req.params
+  res.send({
+    msg: `delete user #${id}`,
+  })
+}
+```
+
+### catch-all route
+
+```js
+// routes/[...catchall].js  ---> /*
+// routes/user/[...catch].js  --->  /user/*
+
+export const GET = (req, res) => {
+  res.send('404 Not Found!')
+}
+```
+
+### route middleware
+
+```js
+export const GET = [authMiddleware, rightsMiddleware, findAll]
+```
+
+
 
 ## Type Definition
 

@@ -5,7 +5,6 @@
 - [x] 基于文件系统的路由
 - [x] 自定义全局前缀
 - [x] 可在控制台打印路由列表
-- [x] Promise API
 - [x] 支持 ES Module 和 CommonJS
 - [x] 支持路由中间件
 
@@ -39,15 +38,15 @@
    import express from 'express'
    import createError from 'http-errors'
    import { setupRouter } from 'express-filebased-routing'
-
+   
    const app = express()
-
+   
    await setupRouter(app)
-
+   
    app.use((req, res, next) => {
      next(createError(404))
    })
-
+   
    app.listen(3000)
    ```
 
@@ -65,12 +64,22 @@
 
 2. 动态路由使用 `routes/user/[id].js` 命名，对应了 `/user/:id`
 
+2. 路由捕获使用 `routes/[...catch].js` 命名，对应了 `/*` ，`routes/user/[...catch].js` 则对应了 `/user/*`
+
 ## 进阶使用
 
-路由中间件，导出数组
+路由中间件
 
 ```typescript
 const sayHello = (req, res) => res.send('Hello World!')
 
 export const GET = (req, res) => [authMiddleware, sayHello]
 ```
+
+## 其他
+
+路由导入顺序
+
+- 文件路由
+- 动态路由
+- 路由捕获
