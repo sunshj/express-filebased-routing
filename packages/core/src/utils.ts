@@ -54,12 +54,21 @@ async function importModule<T>(filePath: string): Promise<Awaited<T>> {
   return isCjs() ? require(filePath) : await import(pathToFileURL(filePath).href)
 }
 
+function isDynamicRoute(urlKey: string) {
+  return urlKey.includes(':')
+}
+
+function isCatchAllRoute(urlKey: string) {
+  return urlKey.includes('*')
+}
+
 export async function readModules(dir: string, ignoreFiles: string[] = []) {
   const ignoreFilesPath = ignoreFiles.map(v =>
     normalizeFilename(v, { removeExtname: false, replaceIndex: false })
   )
   let routesPath: string
   const modules: ModulesMap = new Map()
+  const dynamicModules: ModulesMap = new Map()
   const catchAllModules: ModulesMap = new Map()
 
   const readModule = async (dir: string) => {
@@ -88,8 +97,10 @@ export async function readModules(dir: string, ignoreFiles: string[] = []) {
         for (const [key, value] of handlersEntries) {
           if (REQUEST_METHOD.includes(key)) {
             Reflect.set(validHandlers, key, value)
-            if (urlKey.includes('*')) {
+            if (isCatchAllRoute(urlKey)) {
               catchAllModules.set(urlKey, { filePath, handlers: validHandlers })
+            } else if (isDynamicRoute(urlKey)) {
+              dynamicModules.set(urlKey, { filePath, handlers: validHandlers })
             } else {
               modules.set(urlKey, { filePath, handlers: validHandlers })
             }
@@ -101,7 +112,10 @@ export async function readModules(dir: string, ignoreFiles: string[] = []) {
 
   await readModule(dir)
   const sortedModules = toSortedModulesMap(modules)
+  const sortedDynamicModules = toSortedModulesMap(dynamicModules)
   const sortedCatchAllModules = toSortedModulesMap(catchAllModules, false)
+
+  sortedDynamicModules.forEach((value, key) => sortedModules.set(key, value))
   sortedCatchAllModules.forEach((value, key) => sortedModules.set(key, value))
 
   return sortedModules
