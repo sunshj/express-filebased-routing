@@ -1,9 +1,12 @@
 import path from 'path'
 import glob from 'fast-glob'
 import Table from 'cli-table'
+import { callbackify } from 'util'
 import type { Express } from 'express'
 import { normalizePath, normalizeRequestMethod, readModules } from './utils'
 import type { Options, RequestMethod } from './types'
+
+export { Options, RequestMethod }
 
 /**
  * 获取调用模块的当前目录
@@ -49,4 +52,8 @@ export async function setupRouter(app: Express, options?: Options) {
 
   if (typeof logger === 'boolean' && logger) console.log(table.toString())
   else if (typeof logger === 'object' && logger.enable) console.log(table.toString())
+
+  return app
 }
+
+export const setupRouterSync = callbackify<Express, Options, Express>(setupRouter)
