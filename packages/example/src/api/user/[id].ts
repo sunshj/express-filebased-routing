@@ -1,5 +1,5 @@
-import type { Handler } from 'express'
 import { users } from '../../db'
+import type { Handler } from 'express'
 
 export const GET: Handler = (req, res) => {
   const { id } = req.params

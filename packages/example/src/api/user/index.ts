@@ -1,6 +1,6 @@
-import { findAll, createOne } from './controller'
 import { joiValidator } from '../../middlewares'
-import { findAllUserDto, createUserDto } from './dto'
+import { createOne, findAll } from './controller'
+import { createUserDto, findAllUserDto } from './dto'
 
 export const GET = [joiValidator(findAllUserDto), findAll]
 

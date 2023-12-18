@@ -1,5 +1,5 @@
-import type { Request, Response, NextFunction } from 'express'
 import joi, { type ValidationOptions } from 'joi'
+import type { NextFunction, Request, Response } from 'express'
 
 const schemaKeys = ['params', 'query', 'body'] as const
 

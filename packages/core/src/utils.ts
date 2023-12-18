@@ -1,8 +1,8 @@
-import path from 'path'
-import fs from 'fs/promises'
-import type { NormalizeFilenameOptions } from './types'
-import { pathToFileURL } from 'url'
+import path from 'node:path'
+import fs from 'node:fs/promises'
+import { pathToFileURL } from 'node:url'
 import { CATCH_ALL_ROUTE_REGEXP } from './constant'
+import type { NormalizeFilenameOptions } from './types'
 
 function isCjs() {
   return typeof module !== 'undefined' && module.exports && typeof require !== 'undefined'
@@ -25,7 +25,7 @@ export function getRouterPath(routesPath: string, filePath: string) {
  * 规范化路径
  */
 export function normalizePath(path: string, frontSlash: boolean = true) {
-  return path.replace(/\\/g, '/').replace(/^[/]*/, frontSlash ? '/' : '')
+  return path.replaceAll('\\', '/').replace(/^\/*/, frontSlash ? '/' : '')
 }
 
 /**
@@ -38,11 +38,11 @@ export function normalizeFilename(filename: string, options?: NormalizeFilenameO
   return (
     filename
       .slice(0, dotIndex > 0 ? dotIndex : filename.length)
-      .replace(/\\/g, '/')
+      .replaceAll('\\', '/')
       .replace(replaceIndex ? 'index' : '/', '/')
-      .replace(/\[([^\]]+)\]/g, ':$1')
-      .replace(/^[/]*/, '/')
-      .replace(/[/]*$/, '') || '/'
+      .replaceAll(/\[([^\]]+)]/g, ':$1')
+      .replace(/^\/*/, '/')
+      .replace(/\/*$/, '') || '/'
   )
 }
 

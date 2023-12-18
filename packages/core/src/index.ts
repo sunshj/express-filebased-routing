@@ -1,11 +1,11 @@
-import path from 'path'
+import path from 'node:path'
+import { callbackify } from 'node:util'
 import glob from 'fast-glob'
 import Table from 'cli-table'
-import { callbackify } from 'util'
-import type { Express } from 'express'
 import { generateRouter } from './router'
-import type { Options, RequestMethod, TableDataRow } from './types'
 import { normalizePath } from './utils'
+import type { Express } from 'express'
+import type { Options, RequestMethod, TableDataRow } from './types'
 
 export { Options, RequestMethod }
 

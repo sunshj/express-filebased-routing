@@ -1,5 +1,5 @@
-import type { Handler } from 'express'
 import { users } from '../../db'
+import type { Handler } from 'express'
 
 export const findAll: Handler = (req, res) => {
   const { page, size } = req.query

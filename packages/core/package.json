@@ -6,27 +6,27 @@
     "express.js",
     "filebased routing"
   ],
-  "author": "sunshj",
   "license": "ISC",
+  "author": "sunshj",
+  "files": [
+    "dist"
+  ],
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
   "scripts": {
     "build": "tsup src/index.ts",
     "build:watch": "pnpm build --watch",
     "version:patch": "pnpm version patch",
     "release": "pnpm build && pnpm publish"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "files": [
-    "dist"
-  ],
   "peerDependencies": {
     "express": ">=4.0.0"
   },

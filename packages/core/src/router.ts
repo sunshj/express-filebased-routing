@@ -1,6 +1,6 @@
 import { REQUEST_METHOD } from './constant'
+import { getRouterPath, isCatchAllRoute, isDynamicRoute, readModules } from './utils'
 import type { Handlers, ModulesMap, RequestMethod, RouteData } from './types'
-import { getRouterPath, importModule, isCatchAllRoute, isDynamicRoute, readModules } from './utils'
 
 export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
   const defaultModules: ModulesMap = new Map()
@@ -12,7 +12,7 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
     const urlKey = getRouterPath(entryPath, filePath)
 
     const handlersEntries = Object.entries(handlers) as [RequestMethod, Handlers][]
-    if (!handlersEntries.length) continue
+    if (handlersEntries.length === 0) continue
 
     const validHandlers: Handlers = {}
 

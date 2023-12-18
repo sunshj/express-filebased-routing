@@ -35,7 +35,7 @@ main()
 // routes/user/list.js  --->  /user/list
 // Support Method: GET/POST/PUT/PATCH/DELETE
 
-export const GET: Handler = (_req, res) => {
+export const GET = (_req, res) => {
   res.send({
     msg: 'Express REST API is working'
   })
