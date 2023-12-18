@@ -2,10 +2,10 @@ import path from 'node:path'
 import { callbackify } from 'node:util'
 import glob from 'fast-glob'
 import Table from 'cli-table'
+import { type Application, Router, type RouterOptions } from 'express'
 import { generateRouter } from './router'
 import { normalizePath } from './utils'
-import type { Express } from 'express'
-import type { Options, RequestMethod, TableDataRow } from './types'
+import type { ExpressOrRouter, Options, RequestMethod, TableDataRow } from './types'
 
 export { Options, RequestMethod }
 
@@ -25,7 +25,10 @@ function getModuleParent() {
  * @param {string} [options.globalPrefix]
  * @param [options.logger] false
  */
-export async function setupRouter(app: Express, options?: Options) {
+export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter>(
+  app: TApp,
+  options?: Options
+) {
   const routesPath = options?.directory ?? path.join(getModuleParent()?.path as string, './routes')
   const globalPrefix = options?.globalPrefix ?? ''
   const logger = options?.logger ?? false
@@ -41,7 +44,7 @@ export async function setupRouter(app: Express, options?: Options) {
     const urlKeyWithPrefix = normalizePath(globalPrefix + urlKey)
     const upperCaseMethod = method.toUpperCase() as Uppercase<RequestMethod>
     table.push([upperCaseMethod, loggerBaseUrl + urlKeyWithPrefix, filePath])
-    app[method](urlKeyWithPrefix, handler)
+    app[method](urlKeyWithPrefix, handler as Application)
   }
 
   if (typeof logger === 'boolean' && logger) console.log(table.toString())
@@ -53,4 +56,8 @@ export async function setupRouter(app: Express, options?: Options) {
   return app
 }
 
-export const setupRouterSync = callbackify<Express, Options, Express>(setupRouter)
+export const setupRouterSync = callbackify<ExpressOrRouter, Options, ExpressOrRouter>(setupRouter)
+
+export async function router(options?: Options & { routerOptions?: RouterOptions }) {
+  return await setupRouter<Router>(Router(options?.routerOptions ?? {}), options)
+}

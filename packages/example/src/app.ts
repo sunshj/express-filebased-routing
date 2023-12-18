@@ -10,6 +10,17 @@ async function main() {
   app.set('views', path.join(__dirname, 'views'))
   app.set('view engine', 'ejs')
 
+  // app.use(
+  //   await router({
+  //     directory: path.join(__dirname, '.'),
+  //     ignoreFiles: ['**/*.ejs'],
+  //     logger: {
+  //       enable: true,
+  //       baseUrl: 'http://localhost:3000'
+  //     }
+  //   })
+  // )
+
   await setupRouter(app, {
     directory: path.join(__dirname, '.'),
     ignoreFiles: ['**/*.ejs'],

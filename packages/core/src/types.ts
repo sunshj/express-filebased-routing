@@ -1,5 +1,7 @@
-import type { Handler } from 'express'
+import type { Express, Handler, Router } from 'express'
 import type { REQUEST_METHOD } from './constant'
+
+export type ExpressOrRouter = Express | Router
 
 export type RequestMethod = (typeof REQUEST_METHOD)[number]
 
