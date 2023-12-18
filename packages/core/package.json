@@ -24,8 +24,8 @@
   "scripts": {
     "build": "tsup src/index.ts",
     "build:watch": "pnpm build --watch",
-    "version:patch": "pnpm version patch",
-    "release": "pnpm build && pnpm publish"
+    "release": "bumpp && pnpm publish",
+    "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {
     "express": ">=4.0.0"

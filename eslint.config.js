@@ -1,10 +1,5 @@
-import { sxzz } from '@sxzz/eslint-config'
+import { defineConfig } from '@sunshj/eslint-config'
 
-export default sxzz({
-  files: ['packages/**/*.ts'],
-  rules: {
-    'unicorn/prefer-top-level-await': 'off',
-    'no-console': 'off',
-    'no-return-await': 'off'
-  }
+export default defineConfig({
+  files: ['packages/**/*.ts']
 })
