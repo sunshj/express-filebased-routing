@@ -7,10 +7,9 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
   const dynamicModules: ModulesMap = new Map()
   const catchAllModules: ModulesMap = new Map()
 
-  const modules = await readModules(dir, ignoreFiles)
-  for (const [filePath, routesPath] of modules) {
-    const urlKey = getRouterPath(routesPath, filePath)
-    const handlers = await importModule<Handlers>(filePath)
+  const { entryPath, modules } = await readModules<Handlers>(dir, ignoreFiles)
+  for (const [filePath, handlers] of modules) {
+    const urlKey = getRouterPath(entryPath, filePath)
 
     const handlersEntries = Object.entries(handlers) as [RequestMethod, Handlers][]
     if (!handlersEntries.length) continue

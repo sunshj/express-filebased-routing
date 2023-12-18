@@ -59,17 +59,14 @@ export function isCatchAllRoute(urlKey: string) {
 }
 
 /**
- * 读取目录下的文件路径
- * @param dir
- * @param ignoreFiles
- * @returns  [filePath, entryPath]
+ * 读取目录下的所有文件的路径和模块
  */
-export async function readModules(dir: string, ignoreFiles: string[] = []) {
+export async function readModules<TModule = {}>(dir: string, ignoreFiles: string[] = []) {
   const ignoreFilesPath = ignoreFiles.map(v =>
     normalizeFilename(v, { removeExtname: false, replaceIndex: false })
   )
-  let entryPath: string
-  const modules = new Map<string, string>()
+  let entryPath: string = ''
+  const modules = new Map<string, TModule>()
 
   const readModule = async (dir: string) => {
     if (!entryPath) entryPath = dir
@@ -87,11 +84,15 @@ export async function readModules(dir: string, ignoreFiles: string[] = []) {
       if (stat.isDirectory()) {
         await readModule(filePath)
       } else {
-        modules.set(filePath, entryPath)
+        modules.set(filePath, await importModule(filePath))
       }
     }
   }
 
   await readModule(dir)
-  return modules
+
+  return {
+    entryPath,
+    modules
+  }
 }
