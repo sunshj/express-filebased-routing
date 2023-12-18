@@ -49,21 +49,21 @@ export const GET: Handler = (_req, res) => {
 export const GET = (req, res) => {
   const { id } = req.params
   res.send({
-    msg: `get user #${id}`,
+    msg: `get user #${id}`
   })
 }
 
 export const PUT = (req, res) => {
   const { id } = req.params
   res.send({
-    msg: `put user #${id}`,
+    msg: `put user #${id}`
   })
 }
 
 export const DELETE = (req, res) => {
   const { id } = req.params
   res.send({
-    msg: `delete user #${id}`,
+    msg: `delete user #${id}`
   })
 }
 ```
@@ -84,8 +84,6 @@ export const GET = (req, res) => {
 ```js
 export const GET = [authMiddleware, rightsMiddleware, findAll]
 ```
-
-
 
 ## Type Definition
 

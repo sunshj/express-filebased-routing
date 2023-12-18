@@ -1,10 +1,10 @@
 import path from 'path'
 import fs from 'fs/promises'
-import type { Handlers, ModulesMap, NormalizeFilenameOptions, RequestMethod } from './types'
+import type { NormalizeFilenameOptions } from './types'
 import { pathToFileURL } from 'url'
-import { CATCH_ALL_ROUTE_REGEXP, REQUEST_METHOD } from './constant'
+import { CATCH_ALL_ROUTE_REGEXP } from './constant'
 
-export function isCjs() {
+function isCjs() {
   return typeof module !== 'undefined' && module.exports && typeof require !== 'undefined'
 }
 
@@ -46,34 +46,35 @@ export function normalizeFilename(filename: string, options?: NormalizeFilenameO
   )
 }
 
-export function normalizeRequestMethod(method: RequestMethod) {
-  return method.toLowerCase() as Lowercase<RequestMethod>
-}
-
-async function importModule<T>(filePath: string): Promise<Awaited<T>> {
+export async function importModule<T>(filePath: string): Promise<Awaited<T>> {
   return isCjs() ? require(filePath) : await import(pathToFileURL(filePath).href)
 }
 
-function isDynamicRoute(urlKey: string) {
+export function isDynamicRoute(urlKey: string) {
   return urlKey.includes(':')
 }
 
-function isCatchAllRoute(urlKey: string) {
+export function isCatchAllRoute(urlKey: string) {
   return urlKey.includes('*')
 }
 
+/**
+ * 读取目录下的文件路径
+ * @param dir
+ * @param ignoreFiles
+ * @returns  [filePath, entryPath]
+ */
 export async function readModules(dir: string, ignoreFiles: string[] = []) {
   const ignoreFilesPath = ignoreFiles.map(v =>
     normalizeFilename(v, { removeExtname: false, replaceIndex: false })
   )
-  let routesPath: string
-  const modules: ModulesMap = new Map()
-  const dynamicModules: ModulesMap = new Map()
-  const catchAllModules: ModulesMap = new Map()
+  let entryPath: string
+  const modules = new Map<string, string>()
 
   const readModule = async (dir: string) => {
-    if (!routesPath) routesPath = dir
+    if (!entryPath) entryPath = dir
     const files = await fs.readdir(dir)
+
     for (const file of files) {
       const filePath = path.join(dir, file)
       const normalizedFilePath = normalizeFilename(filePath, {
@@ -81,50 +82,16 @@ export async function readModules(dir: string, ignoreFiles: string[] = []) {
         replaceIndex: false
       })
       if (ignoreFilesPath.includes(normalizedFilePath)) continue
-
       const stat = await fs.stat(filePath)
 
       if (stat.isDirectory()) {
         await readModule(filePath)
       } else {
-        const urlKey = getRouterPath(routesPath, filePath)
-        const handlers = await importModule<Handlers>(filePath)
-
-        const handlersEntries = Object.entries(handlers) as [RequestMethod, Handlers][]
-        if (!handlersEntries.length) continue
-
-        const validHandlers: Handlers = {}
-        for (const [key, value] of handlersEntries) {
-          if (REQUEST_METHOD.includes(key)) {
-            Reflect.set(validHandlers, key, value)
-            if (isCatchAllRoute(urlKey)) {
-              catchAllModules.set(urlKey, { filePath, handlers: validHandlers })
-            } else if (isDynamicRoute(urlKey)) {
-              dynamicModules.set(urlKey, { filePath, handlers: validHandlers })
-            } else {
-              modules.set(urlKey, { filePath, handlers: validHandlers })
-            }
-          }
-        }
+        modules.set(filePath, entryPath)
       }
     }
   }
 
   await readModule(dir)
-  const sortedModules = toSortedModulesMap(modules)
-  const sortedDynamicModules = toSortedModulesMap(dynamicModules)
-  const sortedCatchAllModules = toSortedModulesMap(catchAllModules, false)
-
-  sortedDynamicModules.forEach((value, key) => sortedModules.set(key, value))
-  sortedCatchAllModules.forEach((value, key) => sortedModules.set(key, value))
-
-  return sortedModules
-}
-
-function toSortedModulesMap(map: ModulesMap, positive: boolean = true): ModulesMap {
-  return new Map(
-    Array.from(map)
-      .sort((a, b) => (positive ? a[0].length - b[0].length : b[0].length - a[0].length))
-      .map(v => [v[0], v[1]])
-  )
+  return modules
 }

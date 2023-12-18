@@ -3,8 +3,9 @@ import glob from 'fast-glob'
 import Table from 'cli-table'
 import { callbackify } from 'util'
 import type { Express } from 'express'
-import { normalizePath, normalizeRequestMethod, readModules } from './utils'
-import type { Options, RequestMethod } from './types'
+import { generateRouter } from './router'
+import type { Options, RequestMethod, TableDataRow } from './types'
+import { normalizePath } from './utils'
 
 export { Options, RequestMethod }
 
@@ -30,27 +31,23 @@ export async function setupRouter(app: Express, options?: Options) {
   const logger = options?.logger ?? false
   const loggerBaseUrl =
     typeof logger === 'object' ? normalizePath(logger.baseUrl!, false) ?? '' : ''
-
   const ignoreFiles = await glob(options?.ignoreFiles ?? [], { absolute: true })
 
-  const table = new Table({ head: ['Sid', 'Method', 'Url', 'Path'] })
+  const table = new Table<TableDataRow>({ head: ['Method', 'Url', 'Path'] })
 
-  const modules = await readModules(routesPath, ignoreFiles)
-  let count = 0
-
-  for (const [urlKey, { filePath, handlers }] of modules) {
-    for (const [methodKey, handler] of Object.entries(handlers)) {
-      count += 1
-      const urlKeyWithPrefix = normalizePath(globalPrefix + urlKey)
-
-      table.push([count.toString(), methodKey, loggerBaseUrl + urlKeyWithPrefix, filePath])
-
-      const method = normalizeRequestMethod(methodKey as RequestMethod)
-      app[method](urlKeyWithPrefix, handler)
-    }
+  const routes = await generateRouter(routesPath, ignoreFiles)
+  for (const route of routes) {
+    const { urlKey, method, filePath, handler } = route
+    const urlKeyWithPrefix = normalizePath(globalPrefix + urlKey)
+    const upperCaseMethod = method.toUpperCase() as Uppercase<RequestMethod>
+    table.push([upperCaseMethod, loggerBaseUrl + urlKeyWithPrefix, filePath])
+    app[method](urlKeyWithPrefix, handler)
   }
 
   if (typeof logger === 'boolean' && logger) console.log(table.toString())
+  else if (typeof logger === 'function') logger([...table])
+  else if (typeof logger === 'object' && logger.enable && typeof logger.handler === 'function')
+    logger.handler([...table])
   else if (typeof logger === 'object' && logger.enable) console.log(table.toString())
 
   return app
