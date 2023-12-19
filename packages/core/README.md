@@ -11,11 +11,15 @@ npm i express-filebased-routing
 ```typescript
 import express from 'express'
 import createError from 'http-errors'
-import { setupRouter } from 'express-filebased-routing'
+import { setupRouter, router } from 'express-filebased-routing'
 
 async function main() {
   const app = express()
 
+  // use as middleware
+  // app.use(await router())
+
+  // use as function
   await setupRouter(app)
 
   app.use((req, res, next) => {
@@ -88,18 +92,49 @@ export const GET = [authMiddleware, rightsMiddleware, findAll]
 ## Type Definition
 
 ```typescript
+declare const REQUEST_METHOD: readonly ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+
+type ExpressOrRouter = Express | Router
+
+type RequestMethod = (typeof REQUEST_METHOD)[number]
+
+interface RouteData {
+  urlKey: string
+  method: Lowercase<RequestMethod>
+  filePath: string
+  handler: Handler
+}
+
 interface Options {
   directory?: string
   globalPrefix?: string
+  ignoreFiles?: string[]
   logger?:
     | boolean
+    | ((data: RouteData[]) => void)
     | {
         enable: boolean
         baseUrl?: string
+        handler?: (data: RouteData[]) => void
       }
 }
 
-declare function setupRouter(app: Express, options?: Options): Promise<void>
+declare function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter>(
+  app: TApp,
+  options?: Options
+): Promise<TApp>
 
-export { setupRouter }
+declare const setupRouterSync: (
+  arg1: ExpressOrRouter,
+  arg2: Options,
+  callback: (err: NodeJS.ErrnoException | null, result: ExpressOrRouter) => void
+) => void
+
+declare function router(
+  options?: Options & {
+    routerOptions?: RouterOptions
+  }
+): Promise<Router>
+
+export { type Options, type RequestMethod, router, setupRouter, setupRouterSync }
 ```

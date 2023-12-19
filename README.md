@@ -23,9 +23,11 @@
      // 是否在控制台打印路由列表，可配置baseUrl
      logger?:
        | boolean
+       | ((data: RouteData[]) => void)
        | {
            enable: boolean
            baseUrl?: string
+           handler?: (data: RouteData[]) => void
          }
    }
 
@@ -38,15 +40,15 @@
    import express from 'express'
    import createError from 'http-errors'
    import { setupRouter } from 'express-filebased-routing'
-   
+
    const app = express()
-   
+
    await setupRouter(app)
-   
+
    app.use((req, res, next) => {
      next(createError(404))
    })
-   
+
    app.listen(3000)
    ```
 
@@ -64,7 +66,7 @@
 
 2. 动态路由使用 `routes/user/[id].js` 命名，对应了 `/user/:id`
 
-2. 路由捕获使用 `routes/[...catch].js` 命名，对应了 `/*` ，`routes/user/[...catch].js` 则对应了 `/user/*`
+3. 路由捕获使用 `routes/[...catch].js` 命名，对应了 `/*` ，`routes/user/[...catch].js` 则对应了 `/user/*`
 
 ## 进阶使用
 
