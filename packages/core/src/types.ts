@@ -22,11 +22,11 @@ export interface Options {
   ignoreFiles?: string[]
   logger?:
     | boolean
-    | ((data: TableDataRow[]) => void)
+    | ((data: RouteData[]) => void)
     | {
         enable: boolean
         baseUrl?: string
-        handler?: (data: TableDataRow[]) => void
+        handler?: (data: RouteData[]) => void
       }
 }
 

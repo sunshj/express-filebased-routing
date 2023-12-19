@@ -26,7 +26,10 @@ async function main() {
     ignoreFiles: ['**/*.ejs'],
     logger: {
       enable: true,
-      baseUrl: 'http://localhost:3000'
+      baseUrl: 'http://localhost:3000',
+      handler(data) {
+        console.log('data', data)
+      }
     }
   })
 

@@ -48,9 +48,9 @@ export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter
   }
 
   if (typeof logger === 'boolean' && logger) console.log(table.toString())
-  else if (typeof logger === 'function') logger([...table])
+  else if (typeof logger === 'function') logger(routes)
   else if (typeof logger === 'object' && logger.enable && typeof logger.handler === 'function')
-    logger.handler([...table])
+    logger.handler(routes)
   else if (typeof logger === 'object' && logger.enable) console.log(table.toString())
 
   return app
