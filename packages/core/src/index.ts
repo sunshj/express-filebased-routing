@@ -5,9 +5,11 @@ import Table from 'cli-table'
 import { type Application, Router, type RouterOptions } from 'express'
 import { generateRouter } from './router'
 import { normalizePath } from './utils'
+import { GLOB_IGNORE_EXT, GLOB_IGNORE_NODE_MODULES } from './constant'
 import type { ExpressOrRouter, Options, RequestMethod, TableDataRow } from './types'
 
-export { Options, RequestMethod }
+export { GLOB_IGNORE_EXT, GLOB_IGNORE_NODE_MODULES, REQUEST_METHOD } from './constant'
+export { Options, RequestMethod, RouteData } from './types'
 
 /**
  * 获取调用模块的当前目录
@@ -34,7 +36,10 @@ export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter
   const logger = options?.logger ?? false
   const loggerBaseUrl =
     typeof logger === 'object' ? normalizePath(logger.baseUrl!, false) ?? '' : ''
-  const ignoreFiles = await glob(options?.ignoreFiles ?? [], { absolute: true })
+  const ignoreFiles = await glob(
+    options?.ignoreFiles ?? [GLOB_IGNORE_NODE_MODULES, GLOB_IGNORE_EXT],
+    { absolute: true }
+  )
 
   const table = new Table<TableDataRow>({ head: ['Method', 'Url', 'Path'] })
 

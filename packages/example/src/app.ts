@@ -23,12 +23,11 @@ async function main() {
 
   await setupRouter(app, {
     directory: path.join(__dirname, '.'),
-    ignoreFiles: ['**/*.ejs'],
     logger: {
       enable: true,
       baseUrl: 'http://localhost:3000',
       handler(data) {
-        console.log('data', data)
+        console.table(data, ['urlKey', 'method', 'filePath'])
       }
     }
   })
