@@ -11,10 +11,16 @@
   "files": [
     "dist"
   ],
-  "main": "src/index.ts",
-  "module": "",
-  "types": "",
-  "exports": null,
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
   "scripts": {
     "prebuild": "node ../../scripts/prebuild.cjs",
     "build": "pnpm prebuild && tsup src/index.ts",
