@@ -2,17 +2,14 @@
   "name": "packages",
   "private": true,
   "type": "module",
+  "license": "ISC",
+  "author": "sunshj",
   "scripts": {
     "format": "prettier packages --write",
     "lint": "eslint packages --fix",
-    "build:core": "pnpm -C packages/core build",
+    "prepare": "husky install",
     "release:core": "pnpm -C packages/core release"
   },
-  "engines": {
-    "pnpm": ">=7"
-  },
-  "author": "sunshj",
-  "license": "ISC",
   "devDependencies": {
     "@sunshj/eslint-config": "^1.0.1",
     "@sunshj/prettier-config": "^1.0.0",
@@ -22,10 +19,22 @@
     "bumpp": "^9.2.1",
     "eslint": "^8.56.0",
     "express": "^4.18.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
     "prettier": "^3.1.1",
     "tsup": "^8.0.1",
     "tsx": "^4.6.2",
     "typescript": "^5.3.3"
+  },
+  "engines": {
+    "pnpm": ">=7"
+  },
+  "lint-staged": {
+    "**/*.{js,cjs,ts,json}": [
+      "node scripts/prebuild.cjs",
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "prettier": "@sunshj/prettier-config"
 }

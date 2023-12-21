@@ -22,8 +22,8 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts",
-    "build:watch": "pnpm build --watch",
+    "prebuild": "node ../../scripts/prebuild.cjs",
+    "build": "pnpm prebuild && tsup src/index.ts",
     "release": "bumpp && pnpm publish",
     "prepublishOnly": "pnpm build"
   },
