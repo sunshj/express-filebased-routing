@@ -2,7 +2,8 @@
   "name": "example",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/app.ts",
+    "predev": "node ../../scripts/predev.cjs",
+    "dev": "pnpm predev && tsx watch src/app.ts",
     "build:esm": "rimraf dist && tsup --format esm",
     "build:cjs": "rimraf dist && tsup --format cjs",
     "start:esm": "pnpm build:esm && node dist/app.mjs",
