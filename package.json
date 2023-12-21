@@ -5,10 +5,11 @@
   "license": "ISC",
   "author": "sunshj",
   "scripts": {
+    "dev": "pnpm -C packages/example dev",
     "format": "prettier packages --write",
     "lint": "eslint packages --fix",
     "prepare": "husky install",
-    "release:core": "pnpm -C packages/core release"
+    "release": "pnpm -C packages/core release"
   },
   "devDependencies": {
     "@sunshj/eslint-config": "^1.0.1",
