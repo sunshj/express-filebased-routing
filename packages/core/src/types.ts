@@ -5,13 +5,17 @@ export type ExpressOrRouter = Express | Router
 
 export type RequestMethod = (typeof REQUEST_METHOD)[number]
 
-export type Handlers = Partial<Record<RequestMethod, Handler>>
+export type UppercaseRequestMethod = Uppercase<RequestMethod>
+
+export type LowercaseRequestMethod = Lowercase<RequestMethod>
+
+export type Handlers<TMethod extends string = RequestMethod> = Partial<Record<TMethod, Handler>>
 
 export type ModulesMap = Map<string, { filePath: string; handlers: Handlers }>
 
 export interface RouteData {
   urlKey: string
-  method: Lowercase<RequestMethod>
+  method: LowercaseRequestMethod
   filePath: string
   handler: Handler
 }

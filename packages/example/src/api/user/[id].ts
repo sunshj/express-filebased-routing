@@ -9,6 +9,14 @@ export const GET: Handler = (req, res) => {
   })
 }
 
+export const DELETE: Handler = (req, res) => {
+  const { id } = req.params
+  res.send({
+    msg: `delete user #${id}`,
+    user: users.find(user => user.id === Number(id))
+  })
+}
+
 export const PUT: Handler = (req, res) => {
   const { id } = req.params
   res.send({
@@ -17,10 +25,8 @@ export const PUT: Handler = (req, res) => {
   })
 }
 
-export const DELETE: Handler = (req, res) => {
-  const { id } = req.params
-  res.send({
-    msg: `delete user #${id}`,
-    user: users.find(user => user.id === Number(id))
-  })
+const ALL: Handler = (req, res) => {
+  res.send('match all method')
 }
+
+export default ALL

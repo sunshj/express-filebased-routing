@@ -4,8 +4,9 @@
   "scripts": {
     "predev": "node ../../scripts/predev.cjs",
     "dev": "pnpm predev && tsx watch src/app.ts",
-    "build:esm": "rimraf dist && tsup --format esm",
-    "build:cjs": "rimraf dist && tsup --format cjs",
+    "prebuild": "pnpm -C ../core build",
+    "build:esm": "rimraf dist && pnpm prebuild && tsup --format esm",
+    "build:cjs": "rimraf dist && pnpm prebuild && tsup --format cjs",
     "start:esm": "pnpm build:esm && node dist/app.mjs",
     "start:cjs": "pnpm build:cjs && node dist/app.js"
   },

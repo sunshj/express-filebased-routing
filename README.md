@@ -14,7 +14,7 @@
 
    ```typescript
    interface Options {
-     // 默认读取当前目录下的routes目录
+     // 默认读取项目目录下的routes文件夹
      directory?: string
      // 排除某些文件/目录
      ignoreFiles?: string[]
@@ -56,16 +56,22 @@
 
 ## 基础使用
 
-1. 基础路由如 `routes/index.js` ，对应了 `GET /` ，支持 `GET/POST/PUT/PATCH/DELETE `
+1. 基础路由如 `routes/index.js` ，对应了 `GET /` ，支持 `GET/POST/PUT/PATCH/DELETE/ALL `
 
    ```typescript
-   export const GET = (req, res) => {
+   export const GET: Handler = (req, res) => {
      res.send('Hello World!')
    }
+
+   // ESM 中也可以使用默认default导出创建 app.all()
+   const ALL: Handler = (req, res) => {
+     res.send('match all method')
+   }
+
+   export default ALL
    ```
 
 2. 动态路由使用 `routes/user/[id].js` 命名，对应了 `/user/:id`
-
 3. 路由捕获使用 `routes/[...catch].js` 命名，对应了 `/*` ，`routes/user/[...catch].js` 则对应了 `/user/*`
 
 ## 进阶使用
@@ -80,8 +86,10 @@ export const GET = (req, res) => [authMiddleware, sayHello]
 
 ## 其他
 
-路由导入顺序
+1. 路由导入顺序
 
-- 文件路由
-- 动态路由
-- 路由捕获
+   - 文件路由
+   - 动态路由
+   - 路由捕获
+
+2. 此外每个路由按照GET、POST、PUT、PATCH、DELETE、ALL的顺序依次注册

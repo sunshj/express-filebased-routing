@@ -1,23 +1,18 @@
 import path from 'node:path'
-import { callbackify } from 'node:util'
 import glob from 'fast-glob'
 import Table from 'cli-table'
 import { type Application, Router, type RouterOptions } from 'express'
 import { generateRouter } from './router'
 import { normalizePath } from './utils'
 import { GLOB_IGNORE_EXT, GLOB_IGNORE_NODE_MODULES } from './constant'
-import type { ExpressOrRouter, Options, RequestMethod, TableDataRow } from './types'
+import type { ExpressOrRouter, Options, TableDataRow, UppercaseRequestMethod } from './types'
 
 export { GLOB_IGNORE_EXT, GLOB_IGNORE_NODE_MODULES, REQUEST_METHOD } from './constant'
 export { Options, RequestMethod, RouteData } from './types'
 
-/**
- * 获取调用模块的当前目录
- * @description 此方法不能迁移至外部！
- */
-function getModuleParent() {
-  return Object.values(require.cache)?.find(m => m?.children.includes(module))
-}
+const CJS_MAIN_FILENAME = typeof require !== 'undefined' && require.main?.filename
+
+const PROJECT_DIRECTORY = CJS_MAIN_FILENAME ? path.dirname(CJS_MAIN_FILENAME) : process.cwd()
 
 /**
  * @param {Express} app Express application
@@ -31,7 +26,7 @@ export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter
   app: TApp,
   options?: Options
 ) {
-  const routesPath = options?.directory ?? path.join(getModuleParent()?.path as string, './routes')
+  const routesPath = options?.directory ?? path.join(PROJECT_DIRECTORY, './routes')
   const globalPrefix = options?.globalPrefix ?? ''
   const logger = options?.logger ?? false
   const loggerBaseUrl =
@@ -47,7 +42,7 @@ export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter
   for (const route of routes) {
     const { urlKey, method, filePath, handler } = route
     const urlKeyWithPrefix = normalizePath(globalPrefix + urlKey)
-    const upperCaseMethod = method.toUpperCase() as Uppercase<RequestMethod>
+    const upperCaseMethod = method.toUpperCase() as UppercaseRequestMethod
     table.push([upperCaseMethod, loggerBaseUrl + urlKeyWithPrefix, filePath])
     app[method](urlKeyWithPrefix, handler as Application)
   }
@@ -60,8 +55,6 @@ export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter
 
   return app
 }
-
-export const setupRouterSync = callbackify<ExpressOrRouter, Options, ExpressOrRouter>(setupRouter)
 
 export async function router(options?: Options & { routerOptions?: RouterOptions }) {
   return await setupRouter<Router>(Router(options?.routerOptions ?? {}), options)

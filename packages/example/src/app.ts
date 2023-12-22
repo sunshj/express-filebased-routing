@@ -12,7 +12,7 @@ async function main() {
 
   // app.use(
   //   await router({
-  //     directory: path.join(__dirname, '.'),
+  //     directory: path.join(__dirname),
   //     ignoreFiles: ['**/*.ejs'],
   //     logger: {
   //       enable: true,
@@ -22,13 +22,10 @@ async function main() {
   // )
 
   await setupRouter(app, {
-    directory: path.join(__dirname, '.'),
+    directory: path.join(__dirname),
     logger: {
       enable: true,
-      baseUrl: 'http://localhost:3000',
-      handler(data) {
-        console.table(data, ['urlKey', 'method', 'filePath'])
-      }
+      baseUrl: 'http://localhost:3000'
     }
   })
 
