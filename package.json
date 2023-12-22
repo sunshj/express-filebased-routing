@@ -31,7 +31,7 @@
     "pnpm": ">=7"
   },
   "lint-staged": {
-    "**/*.{js,cjs,ts,json}": [
+    "*.{js,cjs,ts,json,md,yaml}": [
       "node scripts/prebuild.cjs",
       "eslint --fix",
       "prettier --write"
