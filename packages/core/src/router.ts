@@ -1,12 +1,19 @@
 import { REQUEST_METHOD } from './constant'
-import { getRouterPath, isCatchAllRoute, isDynamicRoute, readModules } from './utils'
+import {
+  getRouterPath,
+  isCatchAllRoute,
+  isDynamicRoute,
+  normalizeFilename,
+  readModules,
+  toSortedHandlers,
+  toSortedModulesMap
+} from './utils'
 import type {
   Handlers,
   LowercaseRequestMethod,
   ModulesMap,
   RequestMethod,
-  RouteData,
-  UppercaseRequestMethod
+  RouteData
 } from './types'
 
 export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
@@ -14,9 +21,20 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
   const dynamicModules: ModulesMap = new Map()
   const catchAllModules: ModulesMap = new Map()
 
-  const { entryPath, modules } = await readModules<Handlers>(dir, ignoreFiles)
+  const modules = await readModules<Handlers>(dir, ({ filePath }) => {
+    const ignoreFilesPath = ignoreFiles.map(v =>
+      normalizeFilename(v, { removeExtname: false, replaceIndex: false })
+    )
+    const normalizedFilePath = normalizeFilename(filePath, {
+      removeExtname: false,
+      replaceIndex: false
+    })
+    if (ignoreFilesPath.includes(normalizedFilePath)) return
+    return filePath
+  })
+
   for (const [filePath, handlers] of modules) {
-    const urlKey = getRouterPath(entryPath, filePath)
+    const urlKey = getRouterPath(dir, filePath)
 
     const handlersEntries = Object.entries(handlers) as [
       RequestMethod | 'default',
@@ -40,9 +58,9 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
     }
   }
 
-  const sortedModules = toSortedModulesMap(defaultModules)
-  const sortedDynamicModules = toSortedModulesMap(dynamicModules)
-  const sortedCatchAllModules = toSortedModulesMap(catchAllModules, false)
+  const sortedModules = toSortedModulesMap(defaultModules, (a, b) => a - b)
+  const sortedDynamicModules = toSortedModulesMap(dynamicModules, (a, b) => a - b)
+  const sortedCatchAllModules = toSortedModulesMap(catchAllModules, (a, b) => b - a)
 
   sortedDynamicModules.forEach((value, key) => sortedModules.set(key, value))
   sortedCatchAllModules.forEach((value, key) => sortedModules.set(key, value))
@@ -62,32 +80,4 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
   }
 
   return result
-}
-
-function toSortedModulesMap(map: ModulesMap, positive: boolean = true): ModulesMap {
-  return new Map(
-    Array.from(map)
-      .sort(([a], [b]) => (positive ? a.length - b.length : b.length - a.length))
-      .map(v => [v[0], v[1]])
-  )
-}
-
-function toSortedHandlers(handlers: Handlers) {
-  return Object.entries(handlers)
-    .sort(([a], [b]) => {
-      const indexA = REQUEST_METHOD.indexOf(a as UppercaseRequestMethod)
-      const indexB = REQUEST_METHOD.indexOf(b as UppercaseRequestMethod)
-
-      if (indexA < indexB) {
-        return -1
-      } else if (indexA > indexB) {
-        return 1
-      } else {
-        return 0
-      }
-    })
-    .reduce((acc, [method, handler]) => {
-      acc[method as UppercaseRequestMethod] = handler
-      return acc
-    }, {} as Handlers)
 }
