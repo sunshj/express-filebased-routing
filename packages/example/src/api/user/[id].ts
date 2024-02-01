@@ -1,7 +1,7 @@
 import { users } from '../../db'
 import type { Handler } from 'express'
 
-export const GET: Handler = (req, res) => {
+export const get: Handler = (req, res) => {
   const { id } = req.params
   res.send({
     msg: `get user #${id}`,
