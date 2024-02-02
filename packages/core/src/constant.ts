@@ -1,17 +1,4 @@
-export const REQUEST_METHOD = [
-  'get',
-  'post',
-  'put',
-  'patch',
-  'delete',
-  'all',
-  'GET',
-  'POST',
-  'PUT',
-  'DELETE',
-  'PATCH',
-  'ALL'
-] as const
+export const REQUEST_METHOD = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'ALL'] as const
 
 export const CATCH_ALL_ROUTE_REGEXP = /\[\.{3}[^.\]]+]$/
 

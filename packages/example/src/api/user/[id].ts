@@ -25,8 +25,8 @@ export const PUT: Handler = (req, res) => {
   })
 }
 
-const ALL: Handler = (req, res) => {
-  res.send('match all method')
+export const ALL: Handler = (req, res) => {
+  res.send('405 method not allow')
 }
 
 export default ALL

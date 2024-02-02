@@ -37,16 +37,23 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
     const urlKey = getRouterPath(dir, filePath)
 
     const handlersEntries = Object.entries(handlers) as [
-      RequestMethod | 'default',
-      Handlers<RequestMethod | 'default'>
+      RequestMethod | 'DEFAULT',
+      Handlers<RequestMethod | 'DEFAULT'>
     ][]
     if (handlersEntries.length === 0) continue
 
     const validHandlers: Handlers = {}
 
     for (const [key, value] of handlersEntries) {
-      if ([...REQUEST_METHOD, 'default'].includes(key)) {
-        Reflect.set(validHandlers, key === 'default' ? 'ALL' : key, value)
+      if ([...REQUEST_METHOD, 'DEFAULT'].includes(key.toUpperCase())) {
+        if (!Reflect.has(validHandlers, key.toUpperCase())) {
+          Reflect.set(
+            validHandlers,
+            key.toUpperCase() === 'DEFAULT' ? 'ALL' : key.toUpperCase(),
+            value
+          )
+        }
+
         if (isCatchAllRoute(urlKey)) {
           catchAllModules.set(urlKey, { filePath, handlers: validHandlers })
         } else if (isDynamicRoute(urlKey)) {
