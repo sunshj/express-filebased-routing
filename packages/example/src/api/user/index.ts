@@ -1,7 +1,6 @@
-import { joiValidator } from '../../middlewares'
-import { createOne, findAll } from './controller'
+import { createOne, findAll } from './services'
 import { createUserDto, findAllUserDto } from './dto'
 
-export const GET = [joiValidator(findAllUserDto), findAll]
+export const GET = [findAllUserDto, findAll]
 
-export const POST = [joiValidator(createUserDto), createOne]
+export const POST = [createUserDto, createOne]

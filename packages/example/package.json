@@ -7,8 +7,8 @@
     "prebuild": "pnpm -C ../core build",
     "build:esm": "rimraf dist && pnpm prebuild && tsup --format esm",
     "build:cjs": "rimraf dist && pnpm prebuild && tsup --format cjs",
-    "start:esm": "pnpm build:esm && node dist/app.mjs",
-    "start:cjs": "pnpm build:cjs && node dist/app.js"
+    "start:esm": "node dist/app.mjs",
+    "start:cjs": "node dist/app.cjs"
   },
   "dependencies": {
     "ejs": "^3.1.9",

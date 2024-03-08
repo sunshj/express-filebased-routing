@@ -1,9 +1,21 @@
-import joi, { type ValidationOptions } from 'joi'
+import joi, { type Schema, type ValidationOptions } from 'joi'
 import type { NextFunction, Request, Response } from 'express'
 
 const schemaKeys = ['params', 'query', 'body'] as const
+interface JoiValidationOptions extends ValidationOptions {
+  strict: boolean
+}
 
-export const joiValidator = (schemas: DtoValidateSchema, options = { strict: false }) => {
+interface DtoValidateSchema {
+  query?: Record<string, Schema>
+  body?: Record<string, Schema>
+  params?: Record<string, Schema>
+}
+
+export const joiValidator = (
+  schemas: DtoValidateSchema,
+  options: JoiValidationOptions = { strict: false }
+) => {
   let validateOptions: ValidationOptions = { allowUnknown: true, stripUnknown: true }
   if (!options.strict) {
     const { strict, ...rest } = options
@@ -26,4 +38,8 @@ export const joiValidator = (schemas: DtoValidateSchema, options = { strict: fal
 
     next()
   }
+}
+
+export function createDtoValidator(schemas: DtoValidateSchema, options?: JoiValidationOptions) {
+  return joiValidator(schemas, options)
 }
