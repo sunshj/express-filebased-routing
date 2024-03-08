@@ -1,5 +1,5 @@
-import type { Handler } from 'express'
+import { defineEventHandler } from 'express-filebased-routing'
 
-export const GET: Handler = (req, res) => {
-  res.send('404 Not Found!')
-}
+export const GET = defineEventHandler(() => {
+  return '404 Not Found!'
+})

@@ -1,5 +1,5 @@
-import type { Handler } from 'express'
+import { defineEventHandler } from 'express-filebased-routing'
 
-export const GET: Handler = (_req, res) => {
+export const GET = defineEventHandler((req, res) => {
   res.render('index', { title: 'Hello Express.js' })
-}
+})
