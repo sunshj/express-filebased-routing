@@ -1,32 +1,32 @@
+import { defineEventHandler } from 'express-filebased-routing'
 import { users } from '../../db'
-import type { Handler } from 'express'
 
-export const get: Handler = (req, res) => {
-  const { id } = req.params
-  res.send({
-    msg: `get user #${id}`,
-    user: users.find(user => user.id === Number(id))
-  })
-}
+export default defineEventHandler({
+  GET(req) {
+    const { id } = req.params
+    return {
+      msg: `get user #${id}`,
+      user: users.find(user => user.id === Number(id))
+    }
+  },
 
-export const DELETE: Handler = (req, res) => {
-  const { id } = req.params
-  res.send({
-    msg: `delete user #${id}`,
-    user: users.find(user => user.id === Number(id))
-  })
-}
+  PUT(req) {
+    const { id } = req.params
+    return {
+      msg: `put user #${id}`,
+      user: users.find(user => user.id === Number(id))
+    }
+  },
 
-export const PUT: Handler = (req, res) => {
-  const { id } = req.params
-  res.send({
-    msg: `put user #${id}`,
-    user: users.find(user => user.id === Number(id))
-  })
-}
+  DELETE(req) {
+    const { id } = req.params
+    return {
+      msg: `delete user #${id}`,
+      user: users.find(user => user.id === Number(id))
+    }
+  },
 
-export const ALL: Handler = (req, res) => {
-  res.send('405 method not allow')
-}
-
-export default ALL
+  ALL() {
+    return '405 method not allow'
+  }
+})

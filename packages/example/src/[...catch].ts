@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'express-filebased-routing'
 
-export const GET = defineEventHandler(() => {
+export default defineEventHandler(() => {
   return '404 Not Found!'
 })

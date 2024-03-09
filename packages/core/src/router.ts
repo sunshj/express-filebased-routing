@@ -1,4 +1,4 @@
-import { REQUEST_METHOD } from './constant'
+import { DEFINE_EVENT_HANDLER_NAME, REQUEST_METHOD } from './constant'
 import {
   getRouterPath,
   isCatchAllRoute,
@@ -38,7 +38,7 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
 
     const handlersEntries = Object.entries(handlers) as [
       RequestMethod | 'DEFAULT',
-      Handlers<RequestMethod | 'DEFAULT'>
+      Handlers<RequestMethod | 'DEFAULT'> & { name?: string }
     ][]
     if (handlersEntries.length === 0) continue
 
@@ -47,11 +47,16 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
     for (const [key, value] of handlersEntries) {
       if ([...REQUEST_METHOD, 'DEFAULT'].includes(key.toUpperCase())) {
         if (!Reflect.has(validHandlers, key.toUpperCase())) {
-          Reflect.set(
-            validHandlers,
-            key.toUpperCase() === 'DEFAULT' ? 'ALL' : key.toUpperCase(),
-            value
-          )
+          if (value.name === DEFINE_EVENT_HANDLER_NAME) {
+            Reflect.deleteProperty(value, 'name')
+            Object.assign(validHandlers, value)
+          } else {
+            Reflect.set(
+              validHandlers,
+              key.toUpperCase() === 'DEFAULT' ? 'ALL' : key.toUpperCase(),
+              value
+            )
+          }
         }
 
         if (isCatchAllRoute(urlKey)) {

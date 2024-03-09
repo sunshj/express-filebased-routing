@@ -1,7 +1,5 @@
-import type { Handler } from 'express'
+import { defineEventHandler } from 'express-filebased-routing'
 
-export const GET: Handler = (_req, res) => {
-  res.send({
-    msg: 'Express REST API is working'
-  })
-}
+export const GET = defineEventHandler(() => {
+  return { msg: 'Express REST API is working' }
+})

@@ -9,7 +9,7 @@ import type { ExpressOrRouter, Options, TableDataRow, UppercaseRequestMethod } f
 
 export { GLOB_IGNORE_EXT, GLOB_IGNORE_NODE_MODULES, REQUEST_METHOD } from './constant'
 export { Options, RequestMethod, RouteData } from './types'
-export * from './helper'
+export { defineEventHandler } from './helper'
 
 const CJS_MAIN_FILENAME = typeof require !== 'undefined' && require.main?.filename
 

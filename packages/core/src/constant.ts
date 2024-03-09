@@ -5,3 +5,5 @@ export const CATCH_ALL_ROUTE_REGEXP = /\[\.{3}[^.\]]+]$/
 export const GLOB_IGNORE_EXT = '!(**/*.?([cm])[jt]s)'
 
 export const GLOB_IGNORE_NODE_MODULES = 'node_modules/**'
+
+export const DEFINE_EVENT_HANDLER_NAME = '__defineEventHandler__'
