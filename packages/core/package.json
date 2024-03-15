@@ -22,8 +22,8 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts",
-    "build:watch": "tsup src/index.ts --watch --onSuccess",
+    "build": "tsup",
+    "build:watch": "tsup --watch --onSuccess",
     "release": "bumpp && pnpm publish",
     "prepublishOnly": "pnpm build"
   },

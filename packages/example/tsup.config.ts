@@ -12,5 +12,6 @@ export default defineConfig({
   },
   clean: true,
   shims: true,
+  silent: true,
   external: ['express', 'http-errors', 'joi', 'ejs']
 })

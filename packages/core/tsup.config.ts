@@ -1,6 +1,7 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
+  entry: ['src'],
   format: ['cjs', 'esm'],
   outExtension({ format }) {
     return {
@@ -10,5 +11,6 @@ export default defineConfig({
   clean: true,
   dts: true,
   cjsInterop: true,
+  silent: true,
   external: ['express']
 })

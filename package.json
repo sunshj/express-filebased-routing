@@ -5,7 +5,7 @@
   "license": "ISC",
   "author": "sunshj",
   "scripts": {
-    "dev": "pnpm -C packages/example dev --silent",
+    "dev": "pnpm -C packages/example dev",
     "format": "prettier packages --write",
     "lint": "eslint packages --fix",
     "prepare": "husky install",

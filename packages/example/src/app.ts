@@ -6,6 +6,7 @@ import { setupRouter } from 'express-filebased-routing'
 const app = express()
 
 async function main() {
+  console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
   app.use(express.json())
   app.use(express.urlencoded({ extended: false }))
   app.set('views', path.join(__dirname, 'views'))
