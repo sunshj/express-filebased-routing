@@ -33,7 +33,7 @@ export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter
   const loggerBaseUrl =
     typeof logger === 'object' ? normalizePath(logger.baseUrl!, false) ?? '' : ''
   const ignoreFiles = await glob(
-    options?.ignoreFiles ?? [GLOB_IGNORE_NODE_MODULES, GLOB_IGNORE_EXT],
+    [GLOB_IGNORE_NODE_MODULES, GLOB_IGNORE_EXT, ...(options?.ignoreFiles ?? [])],
     { absolute: true }
   )
 
