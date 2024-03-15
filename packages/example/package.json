@@ -2,13 +2,10 @@
   "name": "example",
   "private": true,
   "scripts": {
-    "predev": "node ../../scripts/predev.cjs",
-    "dev": "pnpm predev && tsx watch src/app.ts",
-    "prebuild": "pnpm -C ../core build",
-    "build:esm": "rimraf dist && pnpm prebuild && tsup --format esm",
-    "build:cjs": "rimraf dist && pnpm prebuild && tsup --format cjs",
-    "start:esm": "node dist/app.mjs",
-    "start:cjs": "node dist/app.cjs"
+    "build:core": "pnpm -C ../core build:watch",
+    "dev": "pnpm build:core \"cd ../example && tsx watch src/app.ts\"",
+    "dev:esm": "rimraf dist && tsup --format esm --watch --onSuccess \"node dist/app.mjs\"",
+    "dev:cjs": "rimraf dist && tsup --format cjs --watch --onSuccess \"node dist/app.cjs\""
   },
   "dependencies": {
     "ejs": "^3.1.9",
