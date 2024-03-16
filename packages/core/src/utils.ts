@@ -1,6 +1,8 @@
 import path from 'node:path'
 import fs from 'node:fs/promises'
+import fsSync from 'node:fs'
 import { pathToFileURL } from 'node:url'
+import importSync from 'import-sync'
 import { CATCH_ALL_ROUTE_REGEXP, REQUEST_METHOD } from './constant'
 import type {
   Handlers,
@@ -55,6 +57,10 @@ export async function importModule<T>(filePath: string): Promise<Awaited<T>> {
   return isCjs() ? require(filePath) : await import(pathToFileURL(filePath).href)
 }
 
+export function importModuleSync<TModule>(filePath: string): TModule {
+  return importSync(filePath)
+}
+
 export function isDynamicRoute(urlKey: string) {
   return urlKey.includes(':')
 }
@@ -68,11 +74,7 @@ export function isCatchAllRoute(urlKey: string) {
  */
 export async function readModules<TModule = {}>(
   directory: string,
-  handler?: (data: {
-    filePath: string
-    dir: string
-    file: string
-  }) => string | Promise<string> | undefined
+  handler?: (filePath: string) => string | Promise<string> | undefined
 ) {
   const modules = new Map<string, TModule>()
 
@@ -86,7 +88,7 @@ export async function readModules<TModule = {}>(
       if (stat.isDirectory()) {
         await readModule(filePath)
       } else {
-        const handleFilePath = handler ? await handler({ filePath, dir, file }) : filePath
+        const handleFilePath = handler ? await handler(filePath) : filePath
         if (!handleFilePath) continue
         modules.set(handleFilePath, await importModule(filePath))
       }
@@ -94,6 +96,37 @@ export async function readModules<TModule = {}>(
   }
 
   await readModule(directory)
+
+  return modules
+}
+
+export function readModulesSync<TModule = {}>(
+  directory: string,
+  handler?: (filePath: string) => string | undefined
+) {
+  const filenames = new Map<string, string>()
+  const modules = new Map<string, TModule>()
+  let files = fsSync.readdirSync(directory)
+
+  while (files.length > 0) {
+    const relativePath = files.shift()!
+    const filePath = path.join(directory, relativePath)
+
+    if (fsSync.statSync(filePath).isDirectory()) {
+      const subFiles = fsSync
+        .readdirSync(filePath)
+        .map(f => path.join(filePath.replace(directory, ''), f))
+      files = files.concat(subFiles)
+    } else {
+      const handleFilePath = handler ? handler(filePath) : filePath
+      if (!handleFilePath) continue
+      filenames.set(normalizeFilename(relativePath), handleFilePath)
+    }
+  }
+
+  for (const file of filenames.values()) {
+    modules.set(file, importModuleSync<TModule>(file))
+  }
 
   return modules
 }
