@@ -58,6 +58,7 @@ export async function importModule<T>(filePath: string): Promise<Awaited<T>> {
 }
 
 export function importModuleSync<TModule>(filePath: string): TModule {
+  if (!isCjs()) throw new Error('sync functions only works on CommonJS module')
   return importSync(filePath)
 }
 
