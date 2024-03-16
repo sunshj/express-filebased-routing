@@ -1,10 +1,9 @@
 import path from 'node:path'
-import { glob, globSync } from 'fast-glob'
+import { glob, globSync } from 'glob'
 import Table from 'cli-table'
 import { type Application, Router, type RouterOptions } from 'express'
 import { generateRouter, generateRouterSync } from './router'
 import { normalizePath } from './utils'
-import { GLOB_IGNORE_EXT, GLOB_IGNORE_NODE_MODULES } from './constant'
 import type { ExpressOrRouter, Options, TableDataRow, UppercaseRequestMethod } from './types'
 
 export { GLOB_IGNORE_EXT, GLOB_IGNORE_NODE_MODULES, REQUEST_METHOD } from './constant'
@@ -32,10 +31,10 @@ export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter
   const logger = options?.logger ?? false
   const loggerBaseUrl =
     typeof logger === 'object' ? normalizePath(logger.baseUrl!, false) ?? '' : ''
-  const ignoreFiles = await glob(
-    [GLOB_IGNORE_NODE_MODULES, GLOB_IGNORE_EXT, ...(options?.ignoreFiles ?? [])],
-    { absolute: true }
-  )
+  const ignoreFiles = await glob(options?.ignoreFiles ?? [], {
+    absolute: true,
+    ignore: ['node_modules']
+  })
 
   const table = new Table<TableDataRow>({ head: ['Method', 'Url', 'Path'] })
 
@@ -66,10 +65,10 @@ export function setupRouterSync<TApp extends ExpressOrRouter = ExpressOrRouter>(
   const logger = options?.logger ?? false
   const loggerBaseUrl =
     typeof logger === 'object' ? normalizePath(logger.baseUrl!, false) ?? '' : ''
-  const ignoreFiles = globSync(
-    [GLOB_IGNORE_NODE_MODULES, GLOB_IGNORE_EXT, ...(options?.ignoreFiles ?? [])],
-    { absolute: true }
-  )
+  const ignoreFiles = globSync(options?.ignoreFiles ?? [], {
+    absolute: true,
+    ignore: ['node_modules']
+  })
 
   const table = new Table<TableDataRow>({ head: ['Method', 'Url', 'Path'] })
 

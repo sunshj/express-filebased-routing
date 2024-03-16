@@ -1,35 +1,41 @@
 import path from 'node:path'
 import express from 'express'
 import createError from 'http-errors'
-import { routerSync, setupRouter, setupRouterSync } from 'express-filebased-routing'
+import {
+  GLOB_IGNORE_EXT,
+  routerSync,
+  setupRouter,
+  setupRouterSync
+} from 'express-filebased-routing'
 
 const app = express()
 
-function main() {
+async function main() {
   console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
   app.use(express.json())
   app.use(express.urlencoded({ extended: false }))
   app.set('views', path.join(__dirname, 'views'))
   app.set('view engine', 'ejs')
 
-  app.use(
-    routerSync({
-      directory: path.join(__dirname),
-      ignoreFiles: ['**/*.ejs'],
-      logger: {
-        enable: true,
-        baseUrl: 'http://localhost:3000'
-      }
-    })
-  )
+  // app.use(
+  //   routerSync({
+  //     directory: path.join(__dirname),
+  //     ignoreFiles: ['**/*.ejs'],
+  //     logger: {
+  //       enable: true,
+  //       baseUrl: 'http://localhost:3000'
+  //     }
+  //   })
+  // )
 
-  // setupRouterSync(app, {
-  //   directory: path.join(__dirname),
-  //   logger: {
-  //     enable: true,
-  //     baseUrl: 'http://localhost:3000'
-  //   }
-  // })
+  await setupRouter(app, {
+    directory: path.join(__dirname),
+    ignoreFiles: ['**/*.ejs'],
+    logger: {
+      enable: true,
+      baseUrl: 'http://localhost:3000'
+    }
+  })
 
   app.use((req, res, next) => {
     next(createError(404))

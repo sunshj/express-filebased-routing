@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "cli-table": "^0.3.11",
-    "fast-glob": "^3.3.2",
+    "glob": "^10.3.10",
     "import-sync": "^2.2.2"
   },
   "devDependencies": {
