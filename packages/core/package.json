@@ -1,6 +1,6 @@
 {
   "name": "express-filebased-routing",
-  "version": "0.0.19",
+  "version": "0.1.0",
   "description": "Filebased Routing for Express.js",
   "keywords": [
     "express.js",
