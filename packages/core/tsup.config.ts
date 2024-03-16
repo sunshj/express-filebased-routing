@@ -12,5 +12,6 @@ export default defineConfig({
   dts: true,
   cjsInterop: true,
   silent: true,
+  minify: true,
   external: ['express']
 })

@@ -113,7 +113,6 @@ export function generateRouterSync(dir: string, ignoreFiles: string[] = []) {
   })
 
   for (const [filePath, handlers] of modules) {
-    console.log('filePath:', filePath)
     const urlKey = getRouterPath(dir, filePath)
 
     const handlersEntries = Object.entries(handlers) as [
