@@ -6,4 +6,4 @@ export const GLOB_IGNORE_EXT = '!(**/*.?([cm])[jt]s)'
 
 export const GLOB_IGNORE_NODE_MODULES = 'node_modules/**'
 
-export const DEFINE_EVENT_HANDLER_NAME = '__defineEventHandler__'
+export const DEFINE_EVENT_HANDLER_NAME = Symbol('__defineEventHandler__')

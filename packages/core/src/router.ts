@@ -48,7 +48,7 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
     for (const [key, value] of handlersEntries) {
       if ([...REQUEST_METHOD, 'DEFAULT'].includes(key.toUpperCase())) {
         if (!Reflect.has(validHandlers, key.toUpperCase())) {
-          if (value.name === DEFINE_EVENT_HANDLER_NAME) {
+          if (Reflect.has(value, DEFINE_EVENT_HANDLER_NAME)) {
             Reflect.deleteProperty(value, 'name')
             Object.assign(validHandlers, value)
           } else {
@@ -126,7 +126,7 @@ export function generateRouterSync(dir: string, ignoreFiles: string[] = []) {
     for (const [key, value] of handlersEntries) {
       if ([...REQUEST_METHOD, 'DEFAULT'].includes(key.toUpperCase())) {
         if (!Reflect.has(validHandlers, key.toUpperCase())) {
-          if (value.name === DEFINE_EVENT_HANDLER_NAME) {
+          if (Reflect.has(value, DEFINE_EVENT_HANDLER_NAME)) {
             Reflect.deleteProperty(value, 'name')
             Object.assign(validHandlers, value)
           } else {

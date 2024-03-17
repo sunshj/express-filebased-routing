@@ -34,7 +34,13 @@ export function defineEventHandler<T extends EventHandler | EventHandler[] | Eve
     return Object.entries(eventHandler).reduce<EventHandlerMap & { name?: string }>(
       (handlers, [method, handler]) => {
         handlers[method as RequestMethod] = defineEventHandler(handler, options) as Handler
-        handlers.name = DEFINE_EVENT_HANDLER_NAME
+        Reflect.defineProperty(handlers, DEFINE_EVENT_HANDLER_NAME, {
+          value: DEFINE_EVENT_HANDLER_NAME,
+          enumerable: false,
+          writable: false,
+          configurable: false
+        })
+
         return handlers
       },
       {}
