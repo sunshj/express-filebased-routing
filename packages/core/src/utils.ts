@@ -2,7 +2,6 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import fsSync from 'node:fs'
 import { pathToFileURL } from 'node:url'
-import importSync from 'import-sync'
 import { CATCH_ALL_ROUTE_REGEXP, REQUEST_METHOD } from './constant'
 import type {
   Handlers,
@@ -11,8 +10,12 @@ import type {
   UppercaseRequestMethod
 } from './types'
 
-function isCjs() {
+export function isCjs() {
   return typeof module !== 'undefined' && module.exports && typeof require !== 'undefined'
+}
+
+export const colors = {
+  red: (msg: string) => `\u001B[31m${msg}\u001B[0m`
 }
 
 /**
@@ -58,8 +61,9 @@ export async function importModule<T>(filePath: string): Promise<Awaited<T>> {
 }
 
 export function importModuleSync<TModule>(filePath: string): TModule {
-  if (!isCjs()) throw new Error('sync functions only works on CommonJS module')
-  return importSync(filePath)
+  if (!isCjs())
+    throw new Error(colors.red('importModuleSync is only supported in CommonJS environment'))
+  return require(filePath)
 }
 
 export function isDynamicRoute(urlKey: string) {

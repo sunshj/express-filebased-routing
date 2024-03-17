@@ -62,9 +62,6 @@ importers:
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.2
-      import-sync:
-        specifier: ^2.2.2
-        version: 2.2.2
     devDependencies:
       '@types/cli-table':
         specifier: ^0.3.4
@@ -563,11 +560,6 @@ packages:
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
     dependencies:
       '@hapi/hoek': 9.3.0
-    dev: false
-
-  /@httptoolkit/esm@3.3.0:
-    resolution: {integrity: sha512-gS+TH14750cveYP5p2q/oLyjVV5+qRFZMOpsPzK1KrgacqKc6RLDmt3ioGaMjsn1aianQbROkl4QXDJmO5swPA==}
-    engines: {node: '>=6'}
     dev: false
 
   /@humanwhocodes/config-array@0.11.13:
@@ -2896,12 +2888,6 @@ packages:
       parent-module: 1.0.1
       resolve-from: 4.0.0
     dev: true
-
-  /import-sync@2.2.2:
-    resolution: {integrity: sha512-MQ+8aB1LZu0dHqTmpkOJ5DLCqQNVNqbMrH/S9nvHChUSMsAlX6R3ydQhX3R5/YfCU6+qU3cbASiX59hJisMKgg==}
-    dependencies:
-      '@httptoolkit/esm': 3.3.0
-    dev: false
 
   /imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}

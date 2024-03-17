@@ -3,7 +3,7 @@ import glob from 'fast-glob'
 import Table from 'cli-table'
 import { type Application, Router, type RouterOptions } from 'express'
 import { generateRouter, generateRouterSync } from './router'
-import { normalizePath } from './utils'
+import { colors, isCjs, normalizePath } from './utils'
 import { GLOB_IGNORE_EXT } from './constant'
 import type { ExpressOrRouter, Options, TableDataRow, UppercaseRequestMethod } from './types'
 
@@ -61,6 +61,8 @@ export function setupRouterSync<TApp extends ExpressOrRouter = ExpressOrRouter>(
   app: TApp,
   options?: Options
 ) {
+  if (!isCjs())
+    throw new Error(colors.red('setupRouterSync is only supported in CommonJS environment'))
   const routesPath = options?.directory ?? path.join(PROJECT_DIRECTORY, './routes')
   const globalPrefix = options?.globalPrefix ?? ''
   const logger = options?.logger ?? false
@@ -96,5 +98,6 @@ export async function router(options?: Options & { routerOptions?: RouterOptions
 }
 
 export function routerSync(options?: Options & { routerOptions?: RouterOptions }) {
+  if (!isCjs()) throw new Error(colors.red('routerSync is only supported in CommonJS environment'))
   return setupRouterSync<Router>(Router(options?.routerOptions ?? {}), options)
 }
