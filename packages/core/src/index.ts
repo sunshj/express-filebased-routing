@@ -23,12 +23,13 @@ const PROJECT_DIRECTORY = CJS_MAIN_FILENAME ? path.dirname(CJS_MAIN_FILENAME) : 
  * @param {string} [options.globalPrefix]
  * @param [options.logger] false
  */
-export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter>(
+export async function setupRouter<TApp extends ExpressOrRouter, TMethod extends string[]>(
   app: TApp,
-  options?: Options
+  options?: Options<TMethod>
 ) {
   const routesPath = options?.directory ?? path.join(PROJECT_DIRECTORY, './routes')
   const globalPrefix = options?.globalPrefix ?? ''
+  const additionalMethod = (options?.additionalMethod ?? []).map(v => v.toUpperCase())
   const logger = options?.logger ?? false
   const loggerBaseUrl =
     typeof logger === 'object' ? normalizePath(logger.baseUrl!, false) ?? '' : ''
@@ -39,7 +40,7 @@ export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter
 
   const table = new Table<TableDataRow>({ head: ['Method', 'Url', 'Path'] })
 
-  const routes = await generateRouter(routesPath, ignoreFiles)
+  const routes = await generateRouter(routesPath, ignoreFiles, additionalMethod)
   for (const route of routes) {
     const { urlKey, method, filePath, handler } = route
     const urlKeyWithPrefix = normalizePath(globalPrefix + urlKey)
@@ -57,9 +58,9 @@ export async function setupRouter<TApp extends ExpressOrRouter = ExpressOrRouter
   return app
 }
 
-export function setupRouterSync<TApp extends ExpressOrRouter = ExpressOrRouter>(
+export function setupRouterSync<TApp extends ExpressOrRouter, TMethod extends string[]>(
   app: TApp,
-  options?: Options
+  options?: Options<TMethod>
 ) {
   if (!isCjs())
     throw new Error(colors.red('setupRouterSync is only supported in CommonJS environment'))
@@ -93,11 +94,15 @@ export function setupRouterSync<TApp extends ExpressOrRouter = ExpressOrRouter>(
   return app
 }
 
-export async function router(options?: Options & { routerOptions?: RouterOptions }) {
-  return await setupRouter<Router>(Router(options?.routerOptions ?? {}), options)
+export async function router<TMethod extends string[] = []>(
+  options?: Options<TMethod> & { routerOptions?: RouterOptions }
+) {
+  return await setupRouter<Router, TMethod>(Router(options?.routerOptions ?? {}), options)
 }
 
-export function routerSync(options?: Options & { routerOptions?: RouterOptions }) {
+export function routerSync<TMethod extends string[] = []>(
+  options?: Options<TMethod> & { routerOptions?: RouterOptions }
+) {
   if (!isCjs()) throw new Error(colors.red('routerSync is only supported in CommonJS environment'))
-  return setupRouterSync<Router>(Router(options?.routerOptions ?? {}), options)
+  return setupRouterSync<Router, TMethod>(Router(options?.routerOptions ?? {}), options)
 }

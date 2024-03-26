@@ -3,7 +3,16 @@ import type { RequestMethod } from './types'
 import type { Handler } from 'express'
 
 type EventHandler = (...args: Parameters<Handler>) => any | Promise<any>
-type EventHandlerMap = Partial<Record<RequestMethod, EventHandler | EventHandler[]>>
+
+type BasicRequestHandlers = {
+  [k in RequestMethod]: EventHandler | EventHandler[]
+}
+
+type CustomRequestHandlers = {
+  [x: string]: EventHandler | EventHandler[]
+}
+
+type EventHandlerMap = Partial<BasicRequestHandlers & CustomRequestHandlers>
 
 interface EventHandlerOptions {
   statusCode?: number
@@ -12,7 +21,7 @@ interface EventHandlerOptions {
 
 export function defineEventHandler<T extends EventHandler | EventHandler[] | EventHandlerMap>(
   eventHandler: T,
-  options?: EventHandlerOptions
+  options?: T extends Function ? EventHandlerOptions : never
 ) {
   const statusCode = options?.statusCode ?? 200
   const headers = options?.headers ?? {}
@@ -31,19 +40,16 @@ export function defineEventHandler<T extends EventHandler | EventHandler[] | Eve
   }
 
   if (typeof eventHandler === 'object') {
-    return Object.entries(eventHandler).reduce<EventHandlerMap & { name?: string }>(
-      (handlers, [method, handler]) => {
-        handlers[method as RequestMethod] = defineEventHandler(handler, options) as Handler
-        Reflect.defineProperty(handlers, DEFINE_EVENT_HANDLER_NAME, {
-          value: DEFINE_EVENT_HANDLER_NAME,
-          enumerable: false,
-          writable: false,
-          configurable: false
-        })
+    return Object.entries(eventHandler).reduce<EventHandlerMap>((handlers, [method, handler]) => {
+      handlers[method as RequestMethod] = defineEventHandler(handler!) as Handler
+      Reflect.defineProperty(handlers, DEFINE_EVENT_HANDLER_NAME, {
+        value: DEFINE_EVENT_HANDLER_NAME,
+        enumerable: false,
+        writable: false,
+        configurable: false
+      })
 
-        return handlers
-      },
-      {}
-    )
+      return handlers
+    }, {})
   }
 }

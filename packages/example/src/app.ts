@@ -1,12 +1,7 @@
 import path from 'node:path'
 import express from 'express'
 import createError from 'http-errors'
-import {
-  GLOB_IGNORE_EXT,
-  routerSync,
-  setupRouter,
-  setupRouterSync
-} from 'express-filebased-routing'
+import { setupRouter } from 'express-filebased-routing'
 
 const app = express()
 
@@ -30,6 +25,7 @@ async function main() {
 
   await setupRouter(app, {
     directory: path.join(__dirname),
+    additionalMethod: ['HEAD'],
     logger: {
       enable: true,
       baseUrl: 'http://localhost:3000'

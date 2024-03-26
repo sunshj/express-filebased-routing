@@ -17,7 +17,11 @@ import type {
   RouteData
 } from './types'
 
-export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
+export async function generateRouter(
+  dir: string,
+  ignoreFiles: string[] = [],
+  additionalMethod: string[]
+) {
   const defaultModules: ModulesMap = new Map()
   const dynamicModules: ModulesMap = new Map()
   const catchAllModules: ModulesMap = new Map()
@@ -46,7 +50,7 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
     const validHandlers: Handlers = {}
 
     for (const [key, value] of handlersEntries) {
-      if ([...REQUEST_METHOD, 'DEFAULT'].includes(key.toUpperCase())) {
+      if ([...REQUEST_METHOD, ...additionalMethod, 'DEFAULT'].includes(key.toUpperCase())) {
         if (!Reflect.has(validHandlers, key.toUpperCase())) {
           if (Reflect.has(value, DEFINE_EVENT_HANDLER_NAME)) {
             Reflect.deleteProperty(value, 'name')
@@ -95,7 +99,11 @@ export async function generateRouter(dir: string, ignoreFiles: string[] = []) {
   return result
 }
 
-export function generateRouterSync(dir: string, ignoreFiles: string[] = []) {
+export function generateRouterSync(
+  dir: string,
+  ignoreFiles: string[] = [],
+  additionalMethod: string[] = []
+) {
   const defaultModules: ModulesMap = new Map()
   const dynamicModules: ModulesMap = new Map()
   const catchAllModules: ModulesMap = new Map()
@@ -124,7 +132,7 @@ export function generateRouterSync(dir: string, ignoreFiles: string[] = []) {
     const validHandlers: Handlers = {}
 
     for (const [key, value] of handlersEntries) {
-      if ([...REQUEST_METHOD, 'DEFAULT'].includes(key.toUpperCase())) {
+      if ([...REQUEST_METHOD, ...additionalMethod, 'DEFAULT'].includes(key.toUpperCase())) {
         if (!Reflect.has(validHandlers, key.toUpperCase())) {
           if (Reflect.has(value, DEFINE_EVENT_HANDLER_NAME)) {
             Reflect.deleteProperty(value, 'name')

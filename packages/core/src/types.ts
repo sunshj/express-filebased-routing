@@ -13,24 +13,25 @@ export type Handlers<TMethod extends string = RequestMethod> = Partial<Record<TM
 
 export type ModulesMap = Map<string, { filePath: string; handlers: Handlers }>
 
-export interface RouteData {
+export interface RouteData<T = LowercaseRequestMethod> {
   urlKey: string
-  method: LowercaseRequestMethod
+  method: T
   filePath: string
   handler: Handler
 }
 
-export interface Options {
+export interface Options<T extends string[]> {
   directory?: string
   globalPrefix?: string
   ignoreFiles?: string[]
+  additionalMethod?: Readonly<T>
   logger?:
     | boolean
-    | ((data: RouteData[]) => void)
+    | ((data: RouteData<Lowercase<RequestMethod | T[number]>>[]) => void)
     | {
         enable: boolean
         baseUrl?: string
-        handler?: (data: RouteData[]) => void
+        handler?: (data: RouteData<Lowercase<RequestMethod | T[number]>>[]) => void
       }
 }
 
